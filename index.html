@@ -48,51 +48,39 @@
             font-size: 1.1rem;
         }
 
-        /* Sistema de Abas */
-        .tabs {
-            display: flex;
-            background: var(--bg-tab);
-            border-radius: 12px 12px 0 0;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 0;
-            flex-wrap: wrap;
+        /* Navegação Mobile */
+        .nav-container {
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 100;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .tab {
+        .nav-select {
+            width: 100%;
             padding: 12px 16px;
-            cursor: pointer;
-            border: none;
-            background: transparent;
+            border-radius: 12px;
+            border: 2px solid var(--primary);
+            background: white;
+            font-size: 1rem;
             font-weight: 500;
-            color: #64748b;
-            transition: all 0.3s;
-            border-bottom: 3px solid transparent;
-            flex: 1;
-            min-width: 0;
-            text-align: center;
-            font-size: 0.85rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .tab:hover {
-            color: var(--primary);
-            background: rgba(37, 99, 235, 0.05);
-        }
-
-        .tab.active {
-            color: var(--primary);
-            border-bottom: 3px solid var(--primary);
-            background: var(--tab-active);
+            color: #1e293b;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%232563eb'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 20px;
         }
 
         .tab-content {
             display: none;
             padding: 15px;
             background: var(--bg-card);
-            border-radius: 0 12px 12px 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
         }
 
@@ -144,7 +132,9 @@
             font-size: 0.8rem;
         }
 
-        input, select, textarea {
+        input,
+        select,
+        textarea {
             padding: 10px 12px;
             border-radius: 8px;
             border: 1px solid #ccc;
@@ -160,7 +150,8 @@
             font-size: 0.9rem;
         }
 
-        th, td {
+        th,
+        td {
             border: 1px solid var(--border);
             padding: 10px 8px;
             text-align: left;
@@ -281,33 +272,6 @@
             padding: 0;
         }
 
-        .team-list li {
-            padding: 12px 15px;
-            margin-bottom: 8px;
-            background: #f8fafc;
-            border-radius: 8px;
-            border-left: 4px solid var(--primary);
-            font-size: 1rem;
-        }
-
-        .status-bar {
-            background: #f1f5f9;
-            padding: 12px 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .admin-actions {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 10px;
-            margin: 15px 0;
-        }
-
         .team-card {
             border: 1px solid var(--border);
             border-radius: 10px;
@@ -389,43 +353,48 @@
             border-radius: 50%;
         }
 
-        input:checked + .toggle-slider {
+        input:checked+.toggle-slider {
             background-color: var(--primary);
         }
 
-        input:checked + .toggle-slider:before {
+        input:checked+.toggle-slider:before {
             transform: translateX(26px);
         }
 
+        .status-bar {
+            background: #f1f5f9;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .admin-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+
         @media (max-width: 480px) {
-            .tab {
-                padding: 10px 8px;
-                font-size: 0.75rem;
-            }
-            
-            .tab-content {
-                padding: 12px;
-            }
-            
-            .card {
-                padding: 12px;
-            }
-            
             .admin-actions {
                 grid-template-columns: 1fr;
             }
-            
+
             .flex {
                 flex-direction: column;
                 align-items: stretch;
             }
-            
+
             .status-bar {
                 flex-direction: column;
                 gap: 8px;
                 align-items: flex-start;
             }
-            
+
             .match-controls {
                 justify-content: center;
             }
@@ -436,15 +405,17 @@
 <body>
     <h1>🏐 Torneio Quartetos</h1>
 
-    <!-- Sistema de Abas -->
-    <div class="tabs">
-        <button class="tab active" data-tab="public">Público</button>
-        <button class="tab" data-tab="teams">Times</button>
-        <button class="tab" data-tab="matches">Partidas</button>
-        <button class="tab" data-tab="ranking">Classificação</button>
-        <button class="tab" data-tab="admin">Administração</button>
-        <button class="tab admin-only" data-tab="create-teams">Criar Times</button>
-        <button class="tab admin-only" data-tab="manage-matches">Gerenciar Partidas</button>
+    <!-- Navegação Mobile -->
+    <div class="nav-container">
+        <select class="nav-select" id="navSelect">
+            <option value="public">📱 Público</option>
+            <option value="teams">👥 Times</option>
+            <option value="matches">🎯 Partidas</option>
+            <option value="ranking">🏆 Classificação</option>
+            <option value="admin">🔐 Administração</option>
+            <option value="create-teams" class="admin-only">➕ Gerenciar Times</option>
+            <option value="manage-matches" class="admin-only">⚽ Gerenciar Partidas</option>
+        </select>
     </div>
 
     <!-- Aba Pública -->
@@ -452,7 +423,7 @@
         <div class="card">
             <h2>🎉 Bem-vindo ao Torneio de Vôlei Quarteto!</h2>
             <p>Este é o sistema de controle e acompanhamento do torneio. Acompanhe aqui os resultados em tempo real!</p>
-            
+
             <div class="qrcode">
                 <h3>📱 Acesso Rápido</h3>
                 <p class="small">Escaneie este QR Code para acessar o site em outro dispositivo:</p>
@@ -515,6 +486,7 @@
                         <th>Pos</th>
                         <th>Time</th>
                         <th>Vitórias</th>
+                        <th>Derrotas</th>
                         <th>Pontos Pró</th>
                         <th>Pontos Contra</th>
                         <th>Saldo</th>
@@ -529,7 +501,7 @@
     <div id="admin-tab" class="tab-content">
         <div class="card">
             <h2>🔐 Área Administrativa</h2>
-            
+
             <div id="login-section">
                 <div class="login-form">
                     <h3>Login</h3>
@@ -578,7 +550,7 @@
                     <button id="btnRefresh">Atualizar Dados</button>
                     <button id="btnDeleteAll" class="danger">Apagar Tudo</button>
                 </div>
-                
+
                 <div class="small muted">
                     <strong>Instruções:</strong>
                     <ol>
@@ -592,18 +564,11 @@
     </div>
 
     <!-- Aba Criar Times (Admin) -->
-    <div id="create-teams-tab" class="tab-content admin-only">
-        <div class="card">
-            <h2>👥 Gerenciar Times</h2>
-            
-            <div id="teams-login-section">
-                <div class="login-form">
-                    <h3>Login Necessário</h3>
-                    <p class="muted">Faça login na aba Administração para gerenciar os times.</p>
-                </div>
-            </div>
+    <div id="teams-admin-section" style="display: none;">
+        <div id="create-teams-tab" class="tab-content admin-only">
+            <div class="card">
+                <h2>👥 Gerenciar Times</h2>
 
-            <div id="teams-admin-section" style="display: none;">
                 <div class="col">
                     <div class="form-group">
                         <label for="teamName">Nome do Time</label>
@@ -626,18 +591,11 @@
     </div>
 
     <!-- Aba Gerenciar Partidas (Admin) -->
-    <div id="manage-matches-tab" class="tab-content admin-only">
-        <div class="card">
-            <h2>⚽ Gerenciar Partidas</h2>
-            
-            <div id="matches-login-section">
-                <div class="login-form">
-                    <h3>Login Necessário</h3>
-                    <p class="muted">Faça login na aba Administração para gerenciar as partidas.</p>
-                </div>
-            </div>
+    <div id="matches-admin-section" style="display: none;">
+        <div id="manage-matches-tab" class="tab-content admin-only">
+            <div class="card">
+                <h2>⚽ Gerenciar Partidas</h2>
 
-            <div id="matches-admin-section" style="display: none;">
                 <div class="admin-actions">
                     <button id="btnGenerate2" class="primary">Gerar Partidas</button>
                     <button id="btnPrepareR2-2">Atualizar R2</button>
@@ -661,7 +619,7 @@
         // --- CONFIGURAÇÕES ---
         const ADMIN_USER = "admin";
         const ADMIN_PASS = "senha123";
-        let INCLUI_PARTIDAS_OPCIONAIS = true; // Agora é uma variável, não constante
+        let INCLUI_PARTIDAS_OPCIONAIS = true;
 
         const firebaseConfig = {
             apiKey: "AIzaSyAR-_FoaRE956Kg3hlC43P6wRST1vRA56w",
@@ -685,8 +643,8 @@
         }
 
         // Utilitários
-        function uid() { 
-            return 'id' + Math.random().toString(36).slice(2, 9); 
+        function uid() {
+            return 'id' + Math.random().toString(36).slice(2, 9);
         }
 
         // --- FUNÇÕES FIREBASE ---
@@ -736,36 +694,26 @@
         // --- LISTENERS EM TEMPO REAL ---
         function setupRealtime() {
             if (!db) return;
-            
+
             db.collection('teams').onSnapshot((snapshot) => {
-                updateStatus();
                 renderPublic();
                 if (isAdmin()) {
-                    renderAdmin();
+                    renderAdminTeams();
+                    renderAdminMatches();
                 }
             });
-            
+
             db.collection('matches').onSnapshot((snapshot) => {
-                updateStatus();
                 renderPublic();
                 if (isAdmin()) {
-                    renderAdmin();
+                    renderAdminTeams();
+                    renderAdminMatches();
                 }
             });
         }
 
         function isAdmin() {
             return localStorage.getItem('isAdmin') === 'true';
-        }
-
-        function updateStatus() {
-            getTeamsSnap().then(teams => {
-                $('#teams-count').text(teams.length);
-            });
-            
-            getMatchesSnap().then(matches => {
-                $('#matches-count').text(matches.length);
-            });
         }
 
         // --- RENDERIZAÇÃO PÚBLICA ---
@@ -777,9 +725,8 @@
                 // Lista de times - JOGADORES EM ORDEM ALFABÉTICA
                 $('#publicTeams').empty();
                 teams.forEach(t => {
-                    // Ordenar jogadores alfabeticamente
                     const playersSorted = [...(t.players || [])].sort((a, b) => a.localeCompare(b));
-                    
+
                     $('#publicTeams').append(
                         `<div class="team-card">
                             <h4>${t.name}</h4>
@@ -790,18 +737,20 @@
                     );
                 });
 
-                // Classificação
+                // Classificação - COM DERROTAS
                 const ranked = computeRankingFromData(teams, matches);
                 $('#publicRanking').empty();
                 ranked.forEach((r, index) => {
                     const position = index + 1;
                     const medal = position === 1 ? '🥇' : position === 2 ? '🥈' : position === 3 ? '🥉' : position;
-                    
+                    const totalMatches = (r.wins || 0) + (r.losses || 0);
+
                     $('#publicRanking').append(
                         `<tr>
                             <td><strong>${medal}</strong></td>
                             <td><strong>${r.name}</strong></td>
                             <td>${r.wins || 0}</td>
+                            <td>${r.losses || 0}</td>
                             <td>${r.scored || 0}</td>
                             <td>${r.conceded || 0}</td>
                             <td>${(r.scored || 0) - (r.conceded || 0)}</td>
@@ -809,48 +758,58 @@
                     );
                 });
 
-                // Partidas - ORDENADAS CORRETAMENTE
+                // Partidas - ORDENADAS CORRETAMENTE E COM NOMES ALTERADOS
                 $('#publicMatches').empty();
-                
+
+                // Filtrar partidas conforme a flag
+                let filteredMatches = matches;
+                if (!INCLUI_PARTIDAS_OPCIONAIS) {
+                    filteredMatches = matches.filter(m => m.matchCode !== 'P9' && m.matchCode !== 'P10');
+                }
+
                 // Agrupar partidas por rodada
                 const matchesByRound = {};
-                matches.forEach(m => {
+                filteredMatches.forEach(m => {
                     if (!matchesByRound[m.round]) {
                         matchesByRound[m.round] = [];
                     }
                     matchesByRound[m.round].push(m);
                 });
-                
+
                 // Ordenar rodadas
                 const rounds = Object.keys(matchesByRound).sort();
-                
+
                 // Para cada rodada, ordenar partidas numericamente
                 rounds.forEach(round => {
                     const roundMatches = matchesByRound[round]
                         .sort((a, b) => {
-                            // Extrair número do código da partida (P1, P2, etc)
                             const numA = parseInt(a.matchCode.replace('P', ''));
                             const numB = parseInt(b.matchCode.replace('P', ''));
                             return numA - numB;
                         });
-                    
+
                     let roundTitle = "";
                     if (round === "1") roundTitle = "Rodada 1";
                     else if (round === "2") roundTitle = "Rodada 2";
                     else if (round === "3") roundTitle = "Finais";
                     else roundTitle = `Rodada ${round}`;
-                    
+
                     $('#publicMatches').append(`<div class="round-title">${roundTitle}</div>`);
-                    
+
                     roundMatches.forEach(m => {
                         const teamA = getNameById(teams, m.teamA);
                         const teamB = getNameById(teams, m.teamB);
                         const score = m.status === 'finalizado' ? ` — ${m.scoreA} x ${m.scoreB}` : ' — A definir';
                         const badgeClass = m.status === 'finalizado' ? 'ok' : 'muted';
-                        
+
+                        // Alterar nomes P11 e P12
+                        let matchCode = m.matchCode;
+                        if (m.matchCode === 'P11') matchCode = 'Semifinal';
+                        if (m.matchCode === 'P12') matchCode = 'Final';
+
                         $('#publicMatches').append(
                             `<div class="match-row">
-                                <strong>${m.matchCode}</strong> 
+                                <strong>${matchCode}</strong> 
                                 <span>${teamA || '—'} vs ${teamB || '—'}</span>
                                 <span class="${badgeClass}">${score}</span>
                             </div>`
@@ -863,103 +822,119 @@
             }
         }
 
-        // --- RENDERIZAÇÃO ADMIN ---
-        async function renderAdmin() {
+        // --- RENDERIZAÇÃO ADMIN - SEPARADA ---
+        async function renderAdminTeams() {
+            try {
+                const teams = await getTeamsSnap();
+
+                // Lista de times no admin - APENAS NA ABA CRIAR TIMES
+                $('#adminTeams').empty();
+                teams.forEach(t => {
+                    const playersSorted = [...(t.players || [])].sort((a, b) => a.localeCompare(b));
+                    $('#adminTeams').append(
+                        `<div class="team-card">
+                    <div class="flex" style="justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <h4>${t.name}</h4>
+                            <div class="players-list">
+                                ${playersSorted.join(', ')}
+                            </div>
+                        </div>
+                        <button class="delTeam danger small" data-id="${t.id}">Excluir</button>
+                    </div>
+                </div>`
+                    );
+                });
+            } catch (error) {
+                console.error('Erro ao renderizar times admin:', error);
+            }
+        }
+
+        async function renderAdminMatches() {
             try {
                 const teams = await getTeamsSnap();
                 const matches = await getMatchesSnap();
 
-                // Lista de times no admin - JOGADORES EM ORDEM ALFABÉTICA
-                $('#adminTeams').empty();
-                teams.forEach(t => {
-                    // Ordenar jogadores alfabeticamente
-                    const playersSorted = [...(t.players || [])].sort((a, b) => a.localeCompare(b));
-                    $('#adminTeams').append(
-                        `<div class="team-card">
-                            <div class="flex" style="justify-content: space-between; align-items: flex-start;">
-                                <div>
-                                    <h4>${t.name}</h4>
-                                    <div class="players-list">
-                                        ${playersSorted.join(', ')}
-                                    </div>
-                                </div>
-                                <button class="delTeam danger small" data-id="${t.id}">Excluir</button>
-                            </div>
-                        </div>`
-                    );
-                });
-
-                // Partidas no admin - ORDENADAS E AGRUPADAS POR RODADA
+                // Partidas no admin - APENAS NA ABA GERENCIAR PARTIDAS
                 $('#adminMatches').empty();
-                
+
+                // Filtrar partidas conforme a flag
+                let filteredMatches = matches;
+                if (!INCLUI_PARTIDAS_OPCIONAIS) {
+                    filteredMatches = matches.filter(m => m.matchCode !== 'P9' && m.matchCode !== 'P10');
+                }
+
                 // Agrupar partidas por rodada
                 const matchesByRound = {};
-                matches.forEach(m => {
+                filteredMatches.forEach(m => {
                     if (!matchesByRound[m.round]) {
                         matchesByRound[m.round] = [];
                     }
                     matchesByRound[m.round].push(m);
                 });
-                
+
                 // Ordenar rodadas
                 const rounds = Object.keys(matchesByRound).sort();
-                
+
                 // Para cada rodada, ordenar partidas numericamente
                 rounds.forEach(round => {
                     const roundMatches = matchesByRound[round]
                         .sort((a, b) => {
-                            // Extrair número do código da partida (P1, P2, etc)
                             const numA = parseInt(a.matchCode.replace('P', ''));
                             const numB = parseInt(b.matchCode.replace('P', ''));
                             return numA - numB;
                         });
-                    
+
                     let roundTitle = "";
                     if (round === "1") roundTitle = "Rodada 1";
                     else if (round === "2") roundTitle = "Rodada 2";
                     else if (round === "3") roundTitle = "Finais";
                     else roundTitle = `Rodada ${round}`;
-                    
+
                     $('#adminMatches').append(`<div class="round-title">${roundTitle}</div>`);
-                    
+
                     roundMatches.forEach(m => {
                         const teamA = getNameById(teams, m.teamA);
                         const teamB = getNameById(teams, m.teamB);
-                        const statusBadge = m.status === 'finalizado' ? 
-                            '<span class="badge ok">Finalizado</span>' : 
+                        const statusBadge = m.status === 'finalizado' ?
+                            '<span class="badge ok">Finalizado</span>' :
                             '<span class="badge muted">Pendente</span>';
-                        
+
+                        // Alterar nomes P11 e P12
+                        let matchCode = m.matchCode;
+                        if (m.matchCode === 'P11') matchCode = 'Semifinal';
+                        if (m.matchCode === 'P12') matchCode = 'Final';
+
                         const html = `
-                            <div style="margin-bottom:16px; padding:12px; border:1px solid var(--border); border-radius:8px;">
-                                <div class="flex">
-                                    <strong>${m.matchCode}</strong>
-                                    ${statusBadge}
-                                </div>
-                                <div style="margin:8px 0">
-                                    <strong>${teamA || '—'}</strong> vs <strong>${teamB || '—'}</strong>
-                                </div>
-                                <div class="match-controls">
-                                    <input class="score-input scoreA" data-id="${m.id}" 
-                                           placeholder="A" value="${m.scoreA || ''}" 
-                                           ${!teamA || !teamB ? 'disabled' : ''}>
-                                    <span>X</span>
-                                    <input class="score-input scoreB" data-id="${m.id}" 
-                                           placeholder="B" value="${m.scoreB || ''}"
-                                           ${!teamA || !teamB ? 'disabled' : ''}>
-                                    <button class="btnSaveScore primary" data-id="${m.id}"
-                                            ${!teamA || !teamB ? 'disabled' : ''}>Salvar</button>
-                                    ${m.status === 'finalizado' ? 
-                                        '<button class="btnResetScore danger small" data-id="'+m.id+'">Resetar</button>' : ''}
-                                </div>
-                                ${(!teamA || !teamB) ? '<small class="muted">Defina os times primeiro</small>' : ''}
-                            </div>
-                        `;
+                    <div style="margin-bottom:16px; padding:12px; border:1px solid var(--border); border-radius:8px;">
+                        <div class="flex">
+                            <strong>${matchCode}</strong>
+                            ${statusBadge}
+                        </div>
+                        <div style="margin:8px 0">
+                            <strong>${teamA || '—'}</strong> vs <strong>${teamB || '—'}</strong>
+                        </div>
+                        <div class="match-controls">
+                            <input class="score-input scoreA" data-id="${m.id}" 
+                                   placeholder="A" value="${m.scoreA || ''}" 
+                                   ${!teamA || !teamB ? 'disabled' : ''}>
+                            <span>X</span>
+                            <input class="score-input scoreB" data-id="${m.id}" 
+                                   placeholder="B" value="${m.scoreB || ''}"
+                                   ${!teamA || !teamB ? 'disabled' : ''}>
+                            <button class="btnSaveScore primary" data-id="${m.id}"
+                                    ${!teamA || !teamB ? 'disabled' : ''}>Salvar</button>
+                            ${m.status === 'finalizado' ?
+                                '<button class="btnResetScore danger small" data-id="' + m.id + '">Resetar</button>' : ''}
+                        </div>
+                        ${(!teamA || !teamB) ? '<small class="muted">Defina os times primeiro</small>' : ''}
+                    </div>
+                `;
                         $('#adminMatches').append(html);
                     });
                 });
-
             } catch (error) {
-                console.error('Erro ao renderizar admin:', error);
+                console.error('Erro ao renderizar partidas admin:', error);
             }
         }
 
@@ -972,15 +947,16 @@
 
         function computeRankingFromData(teams, matches) {
             const map = {};
-            teams.forEach(t => { 
-                map[t.id] = { 
-                    id: t.id, 
-                    name: t.name, 
-                    players: t.players || [], 
-                    wins: 0, 
-                    scored: 0, 
-                    conceded: 0 
-                }; 
+            teams.forEach(t => {
+                map[t.id] = {
+                    id: t.id,
+                    name: t.name,
+                    players: t.players || [],
+                    wins: 0,
+                    losses: 0,
+                    scored: 0,
+                    conceded: 0
+                };
             });
 
             // Calcular estatísticas dos jogos finalizados
@@ -989,16 +965,18 @@
                 const a = map[m.teamA];
                 const b = map[m.teamB];
                 if (!a || !b) return;
-                
+
                 a.scored += Number(m.scoreA || 0);
                 a.conceded += Number(m.scoreB || 0);
                 b.scored += Number(m.scoreB || 0);
                 b.conceded += Number(m.scoreA || 0);
-                
+
                 if (Number(m.scoreA) > Number(m.scoreB)) {
                     a.wins++;
+                    b.losses++;
                 } else if (Number(m.scoreB) > Number(m.scoreA)) {
                     b.wins++;
+                    a.losses++;
                 }
             });
 
@@ -1010,7 +988,7 @@
                 const diffB = B.scored - B.conceded;
                 return diffB - diffA;
             });
-            
+
             return arr;
         }
 
@@ -1023,7 +1001,7 @@
             }
 
             await deleteAllMatches();
-            
+
             // Rodada 1 - Partidas iniciais
             await addMatchToDB({
                 id: uid(),
@@ -1039,7 +1017,7 @@
 
             await addMatchToDB({
                 id: uid(),
-                matchCode: 'P2', 
+                matchCode: 'P2',
                 round: 1,
                 teamA: teams[2].id,
                 teamB: teams[3].id,
@@ -1141,7 +1119,7 @@
 
             // Atualizar rodada 2 baseado nos resultados
             const updates = [];
-            
+
             // P5: Vencedor P1 vs Vencedor P2
             if (results.P1 && results.P2) {
                 updates.push({
@@ -1163,7 +1141,7 @@
             // P7: Perdedor P1 vs Perdedor P2
             if (results.P1 && results.P2) {
                 updates.push({
-                    matchCode: 'P7', 
+                    matchCode: 'P7',
                     teamA: results.P1.loser,
                     teamB: results.P2.loser
                 });
@@ -1173,7 +1151,7 @@
             if (results.P3 && results.P4) {
                 updates.push({
                     matchCode: 'P8',
-                    teamA: results.P3.loser, 
+                    teamA: results.P3.loser,
                     teamB: results.P4.loser
                 });
             }
@@ -1244,7 +1222,7 @@
 
             const a = Number(scoreA);
             const b = Number(scoreB);
-            
+
             if (isNaN(a) || isNaN(b)) {
                 alert('Placares devem ser números válidos');
                 return;
@@ -1303,44 +1281,52 @@
             `);
         }
 
-        // --- SISTEMA DE ABAS ---
-        function setupTabs() {
-            $('.tab').on('click', function() {
-                const tabId = $(this).data('tab');
-                
-                // Remover classe active de todas as abas e conteúdos
-                $('.tab').removeClass('active');
+        // --- SISTEMA DE NAVEGAÇÃO ---
+        function setupNavigation() {
+            $('#navSelect').on('change', function () {
+                const tabId = $(this).val();
+
+                // Remover classe active de todos os conteúdos
                 $('.tab-content').removeClass('active');
-                
-                // Adicionar classe active à aba clicada e ao conteúdo correspondente
-                $(this).addClass('active');
+
+                // Adicionar classe active ao conteúdo correspondente
                 $(`#${tabId}-tab`).addClass('active');
+
+                // Atualizar seções internas admin
+                if (isAdmin()) updateAdminSections();
             });
         }
 
         function updateAdminSections() {
             const adminLoggedIn = isAdmin();
-            
+
             if (adminLoggedIn) {
                 $('#admin-section').show();
                 $('#login-section').hide();
-                $('#teams-admin-section').show();
-                $('#teams-login-section').hide();
-                $('#matches-admin-section').show();
-                $('#matches-login-section').hide();
                 $('.admin-only').show();
+                $('.admin-only').prop('disabled', false);
+
+                // Esconder seções internas das abas admin (será mostrado só na aba ativa)
+                $('#teams-admin-section').hide();
+                $('#matches-admin-section').hide();
+
+                // Mostrar a seção correspondente à aba atual
+                const currentTab = $('#navSelect').val();
+                if (currentTab === 'create-teams') $('#teams-admin-section').show();
+                if (currentTab === 'manage-matches') $('#matches-admin-section').show();
+
+                // Renderizar dados apenas na aba correspondente
+                if (currentTab === 'create-teams') renderAdminTeams();
+                if (currentTab === 'manage-matches') renderAdminMatches();
             } else {
                 $('#admin-section').hide();
                 $('#login-section').show();
-                $('#teams-admin-section').hide();
-                $('#teams-login-section').show();
-                $('#matches-admin-section').hide();
-                $('#matches-login-section').show();
                 $('.admin-only').hide();
-                
-                // Garantir que as abas admin não estejam ativas
-                if ($('.tab.admin-only').hasClass('active')) {
-                    $('.tab[data-tab="public"]').click();
+                $('.admin-only').prop('disabled', true);
+
+                // Se estiver em uma aba admin, voltar para pública
+                if ($('#navSelect').val() === 'create-teams' || $('#navSelect').val() === 'manage-matches') {
+                    $('#navSelect').val('public').trigger('change');
                 }
             }
         }
@@ -1354,9 +1340,9 @@
         $(function () {
             // Configuração inicial
             updateToggle();
-            
+
             // Setup
-            setupTabs();
+            setupNavigation();
             setupRealtime();
             genQRCode();
 
@@ -1364,18 +1350,20 @@
             updateAdminSections();
             renderPublic();
             if (isAdmin()) {
-                renderAdmin();
+                renderAdminTeams();
+                renderAdminMatches();
             }
 
             // Event Listeners
             $('#btnLogin').on('click', function () {
                 const user = $('#loginUser').val();
                 const pass = $('#loginPass').val();
-                
+
                 if (user === ADMIN_USER && pass === ADMIN_PASS) {
                     localStorage.setItem('isAdmin', 'true');
                     updateAdminSections();
-                    renderAdmin();
+                    renderAdminTeams();
+                    renderAdminMatches();
                     alert('Login realizado com sucesso!');
                 } else {
                     alert('Credenciais inválidas!');
@@ -1388,9 +1376,14 @@
                 alert('Logout realizado!');
             });
 
-            $('#toggleOptional').on('change', function() {
+            // No evento do toggleOptional
+            $('#toggleOptional').on('change', function () {
                 INCLUI_PARTIDAS_OPCIONAIS = $(this).is(':checked');
                 updateToggle();
+                renderPublic();
+                if (isAdmin()) {
+                    renderAdminMatches();
+                }
             });
 
             $('#btnAddTeam').on('click', async function () {
@@ -1440,14 +1433,44 @@
                 await deleteTeam(teamId);
             });
 
-            $('#btnGenerate, #btnGenerate2').on('click', generateStructure);
-            $('#btnPrepareR2, #btnPrepareR2-2').on('click', prepareR2);
-            $('#btnPrepareR3, #btnPrepareR3-2').on('click', prepareR3);
-            $('#btnDeleteAll').on('click', deleteAllData);
+            $('#btnGenerate, #btnGenerate2').on('click', async function () {
+                await generateStructure();
+                renderPublic();
+                if (isAdmin()) {
+                    renderAdminMatches();
+                }
+            });
+
+            $('#btnPrepareR2, #btnPrepareR2-2').on('click', async function () {
+                await prepareR2();
+                renderPublic();
+                if (isAdmin()) {
+                    renderAdminMatches();
+                }
+            });
+
+            $('#btnPrepareR3, #btnPrepareR3-2').on('click', async function () {
+                await prepareR3();
+                renderPublic();
+                if (isAdmin()) {
+                    renderAdminMatches();
+                }
+            });
+
+            $('#btnDeleteAll').on('click', async function () {
+                await deleteAllData();
+                renderPublic();
+                if (isAdmin()) {
+                    renderAdminTeams();
+                    renderAdminMatches();
+                }
+            });
+
             $('#btnRefresh').on('click', function () {
                 renderPublic();
                 if (isAdmin()) {
-                    renderAdmin();
+                    renderAdminTeams();
+                    renderAdminMatches();
                 }
             });
 
@@ -1465,4 +1488,5 @@
         });
     </script>
 </body>
+
 </html>
