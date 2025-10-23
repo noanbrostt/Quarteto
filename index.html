@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Torneio Quartetos — Controle (Firestore)</title>
+    <link href="https://cdn.jsdelivr.net/npm/modern-normalize/modern-normalize.css" rel="stylesheet">
+    <style>
+        :root {
+            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        }
+
+        body {
+            max-width: 1100px;
+            margin: 18px auto;
+            padding: 12px;
+        }
+
+        h1 {
+            margin: 0 0 12px;
+        }
+
+        .row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap
+        }
+
+        .card {
+            border: 1px solid #ddd;
+            padding: 12px;
+            border-radius: 8px;
+            background: #fff;
+            flex: 1 1 320px
+        }
+
+        button {
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid #888;
+            background: #f3f3f3;
+            cursor: pointer
+        }
+
+        input,
+        select,
+        textarea {
+            padding: 6px;
+            border-radius: 6px;
+            border: 1px solid #ccc
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse
+        }
+
+        th,
+        td {
+            border: 1px solid #eee;
+            padding: 6px;
+            text-align: left;
+            font-size: 14px
+        }
+
+        .admin-only {
+            display: none
+        }
+
+        .qrcode img {
+            max-width: 150px
+        }
+
+        .match-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 6px
+        }
+
+        .small {
+            font-size: 13px;
+            color: #444
+        }
+
+        .danger {
+            color: #b20000
+        }
+
+        .ok {
+            color: #007700
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 999px;
+            background: #eef;
+            margin-left: 6px
+        }
+
+        .muted {
+            color: #666;
+            font-size: 13px
+        }
+
+        .flex {
+            display: flex;
+            gap: 8px;
+            align-items: center
+        }
+
+        .col {
+            display: flex;
+            flex-direction: column;
+            gap: 6px
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Torneio Quartetos — Controle</h1>
+
+    <div class="row">
+        <div class="card" id="publicCard">
+            <h2>Visão pública</h2>
+            <p class="small">Escaneie o QR ou acesse o link para acompanhar em tempo real.</p>
+            <div class="qrcode" id="qrcode"></div>
+
+            <h3>Times / Formação</h3>
+            <ul id="publicTeams" class="muted"></ul>
+
+            <h3>Classificação (Vitórias → Confronto direto → Saldo)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Vit.</th>
+                        <th>Saldo</th>
+                    </tr>
+                </thead>
+                <tbody id="publicRanking"></tbody>
+            </table>
+
+            <h3>Partidas</h3>
+            <div id="publicMatches" class="muted"></div>
+        </div>
+
+        <div class="card admin-only" id="adminCard">
+            <h2>Área Admin</h2>
+            <div class="flex">
+                <div>
+                    <label>Usuário <input id="loginUser" placeholder="user"></label>
+                    <label>Senha <input id="loginPass" type="password" placeholder="pass"></label>
+                    <button id="btnLogin">Entrar</button>
+                    <button id="btnLogout" style="display:none">Sair</button>
+                </div>
+            </div>
+
+            <hr>
+
+            <h3>Config</h3>
+            <div class="col">
+                <label>Flag: <strong id="flagLabel"></strong></label>
+                <small class="muted">Se false, P9 e P10 não serão criadas.</small>
+            </div>
+
+            <hr>
+            <h3>Gerenciar Times</h3>
+            <div class="col">
+                <input id="teamName" placeholder="Nome do time (obrigatório)">
+                <input id="teamPlayers" placeholder="Jogadores (separar por vírgula)">
+                <div class="flex">
+                    <button id="btnAddTeam">Adicionar time</button>
+                    <button id="btnClearTeams" class="danger">Limpar times</button>
+                </div>
+            </div>
+
+            <h4>Times registrados</h4>
+            <ul id="adminTeams"></ul>
+
+            <hr>
+            <h3>Partidas (Admin)</h3>
+            <div class="col">
+                <div class="flex">
+                    <button id="btnGenerate">Gerar P1..P12 (estrutura)</button>
+                    <button id="btnPrepareR2">Atualizar P5..P8 a partir de resultados R1</button>
+                    <button id="btnPrepareR3">Montar P9..P12 conforme ranking atual</button>
+                </div>
+                <div class="flex">
+                    <button id="btnDeleteAll" class="danger">Apagar tudo (teams & matches)</button>
+                    <button id="btnRefresh">Forçar refresh</button>
+                </div>
+            </div>
+
+            <div id="adminMatches" style="margin-top:10px"></div>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- Firebase (compat) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
+    <script>
+        /*
+          CONFIGURAÇÕES - modificar antes de usar:
+          1) Cole sua firebaseConfig abaixo.
+          2) Ajuste ADMIN_USER e ADMIN_PASS.
+          3) Ajuste INCLUI_PARTIDAS_OPCIONAIS (true/false).
+          4) Habilite Firestore no console do Firebase.
+        */
+
+        // --- ADMIN LOGIN (chumbado) ---
+        const ADMIN_USER = "admin";      // altere aqui
+        const ADMIN_PASS = "senha123";   // altere aqui
+
+        // --- FLAG: incluir P9 e P10? true = sim, false = não ---
+        const INCLUI_PARTIDAS_OPCIONAIS = true; // <--- altera aqui
+
+        // --- FIREBASE CONFIG (cole sua config do Firebase) ---
+        const firebaseConfig = {
+            // COLE AQUI SUA CONFIG DO FIREBASE (projectId, apiKey, etc)
+            /* example:
+            apiKey: "xxx",
+            authDomain: "xxx.firebaseapp.com",
+            projectId: "xxx",
+            storageBucket: "xxx.appspot.com",
+            messagingSenderId: "xxx",
+            appId: "1:xxx:web:yyy"
+            */
+        };
+
+        // init firebase
+        let db;
+        if (firebaseConfig && firebaseConfig.apiKey) {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+        } else {
+            console.warn("Firestore não configurado. Rode em modo local? Aplique config.");
+            db = null;
+        }
+
+        // util
+        function uid() { return 'id' + Math.random().toString(36).slice(2, 9); }
+
+        // ---------- Firestore helpers (fallback para localStorage se db===null) ----------
+        async function addTeamToDB(team) {
+            if (!db) {
+                const arr = JSON.parse(localStorage.getItem('teams') || '[]');
+                arr.push(team);
+                localStorage.setItem('teams', JSON.stringify(arr));
+                return;
+            }
+            await db.collection('teams').doc(team.id).set(team);
+        }
+        async function getTeamsSnap() {
+            if (!db) return JSON.parse(localStorage.getItem('teams') || '[]');
+            const snap = await db.collection('teams').get();
+            return snap.docs.map(d => d.data());
+        }
+        async function deleteAllTeams() {
+            if (!db) { localStorage.removeItem('teams'); return; }
+            const snap = await db.collection('teams').get();
+            const batch = db.batch();
+            snap.forEach(doc => batch.delete(doc.ref));
+            await batch.commit();
+        }
+
+        async function addMatchToDB(match) {
+            if (!db) {
+                const arr = JSON.parse(localStorage.getItem('matches') || '[]');
+                arr.push(match);
+                localStorage.setItem('matches', JSON.stringify(arr));
+                return;
+            }
+            await db.collection('matches').doc(match.id).set(match);
+        }
+        async function updateMatchInDB(id, patch) {
+            if (!db) {
+                const arr = JSON.parse(localStorage.getItem('matches') || '[]');
+                const idx = arr.findIndex(m => m.id === id);
+                if (idx >= 0) { arr[idx] = Object.assign({}, arr[idx], patch); localStorage.setItem('matches', JSON.stringify(arr)); }
+                return;
+            }
+            await db.collection('matches').doc(id).update(patch);
+        }
+        async function getMatchesSnap() {
+            if (!db) return JSON.parse(localStorage.getItem('matches') || '[]');
+            const snap = await db.collection('matches').get();
+            return snap.docs.map(d => d.data());
+        }
+        async function deleteAllMatches() {
+            if (!db) { localStorage.removeItem('matches'); return; }
+            const snap = await db.collection('matches').get();
+            const batch = db.batch();
+            snap.forEach(doc => batch.delete(doc.ref));
+            await batch.commit();
+        }
+
+        // --------- realtime listeners (se Firestore estiver ativo) ----------
+        function setupRealtime() {
+            if (!db) return; // fallback localStorage
+            db.collection('teams').onSnapshot(() => renderPublic());
+            db.collection('matches').onSnapshot(() => renderPublic());
+        }
+
+        // ---------- RENDER PUBLIC ----------
+        async function renderPublic() {
+            const teams = await getTeamsSnap();
+            const matches = await getMatchesSnap();
+
+            // Teams list
+            $('#publicTeams').empty();
+            teams.forEach(t => $('#publicTeams').append(`<li><strong>${t.name}</strong> <span class="muted">(${(t.players || []).join(', ')})</span></li>`));
+
+            // Ranking
+            const ranked = computeRankingFromData(teams, matches);
+            $('#publicRanking').empty();
+            ranked.forEach(r => {
+                $('#publicRanking').append(`<tr><td>${r.name}</td><td>${r.wins || 0}</td><td>${(r.scored || 0) - (r.conceded || 0)}</td></tr>`);
+            });
+
+            // Matches
+            $('#publicMatches').empty();
+            matches.sort((a, b) => (a.slot || 0) - (b.slot || 0)).forEach(m => {
+                const teamA = getNameById(teams, m.teamA);
+                const teamB = getNameById(teams, m.teamB);
+                const score = m.played ? ` — ${m.scoreA} x ${m.scoreB}` : '';
+                $('#publicMatches').append(`<div class="match-row"><strong>${m.code}</strong> ${teamA || '—'} vs ${teamB || '—'} ${score} <span class="badge">${m.round || ''}</span></div>`);
+            });
+        }
+
+        // ---------- RENDER ADMIN ----------
+        async function renderAdmin() {
+            const teams = await getTeamsSnap();
+            const matches = await getMatchesSnap();
+
+            // teams list
+            $('#adminTeams').empty();
+            teams.forEach(t => {
+                $('#adminTeams').append(`<li>${t.name} <button class="delTeam" data-id="${t.id}">Excluir</button></li>`);
+            });
+
+            // admin matches with score inputs
+            $('#adminMatches').empty();
+            matches.sort((a, b) => (a.slot || 0) - (b.slot || 0)).forEach(m => {
+                const teamA = getNameById(teams, m.teamA) || '—';
+                const teamB = getNameById(teams, m.teamB) || '—';
+                const played = m.played ? ' (finalizada)' : '';
+                const html = `<div style="margin-bottom:8px">
+      <strong>${m.code}</strong> ${m.round || ''} — ${teamA} vs ${teamB} ${played}
+      <div style="margin-top:6px">
+        <input size="3" class="scoreA" data-id="${m.id}" placeholder="A" value="${m.scoreA || ''}">
+        <input size="3" class="scoreB" data-id="${m.id}" placeholder="B" value="${m.scoreB || ''}">
+        <button class="btnSaveScore" data-id="${m.id}">Salvar</button>
+      </div>
+    </div>`;
+                $('#adminMatches').append(html);
+            });
+        }
+
+        // ---------- HELPERS ----------
+        function getNameById(teams, id) {
+            if (!id) return null;
+            const t = teams.find(x => x.id === id);
+            return t ? t.name : null;
+        }
+
+        // compute ranking array from raw teams+matches (do not store wins in teams collection)
+        function computeRankingFromData(teams, matches) {
+            // prepare copy
+            const map = {};
+            teams.forEach(t => { map[t.id] = { id: t.id, name: t.name, players: t.players || [], wins: 0, scored: 0, conceded: 0 }; });
+
+            matches.forEach(m => {
+                if (!m.played) return;
+                const a = map[m.teamA];
+                const b = map[m.teamB];
+                if (!a || !b) return;
+                a.scored += Number(m.scoreA || 0);
+                a.conceded += Number(m.scoreB || 0);
+                b.scored += Number(m.scoreB || 0);
+                b.conceded += Number(m.scoreA || 0);
+                if (Number(m.scoreA) > Number(m.scoreB)) a.wins++;
+                else if (Number(m.scoreB) > Number(m.scoreA)) b.wins++;
+            });
+
+            // ranking logic: wins desc, head-to-head (if single match between two), then point diff
+            const arr = Object.values(map);
+            arr.sort((A, B) => {
+                if (B.wins !== A.wins) return B.wins - A.wins;
+                // head-to-head determination
+                const hh = headToHeadResult(A.id, B.id, matches);
+                if (hh !== null) return hh; // hh is positive if A better -> we want negative to put A before B? We'll return -hh so A before B if hh=1
+                // point diff
+                const diffA = (A.scored || 0) - (A.conceded || 0);
+                const diffB = (B.scored || 0) - (B.conceded || 0);
+                return diffB - diffA;
+            });
+            return arr;
+        }
+
+        // headToHeadResult returns: -1 if A should be after B, 1 if A should be before B, null if inconclusive
+        function headToHeadResult(idA, idB, matches) {
+            const played = matches.filter(m => {
+                return m.played && ((m.teamA === idA && m.teamB === idB) || (m.teamA === idB && m.teamB === idA));
+            });
+            if (played.length === 1) {
+                const m = played[0];
+                // determine who won
+                let aWon = false, bWon = false;
+                if (m.teamA === idA) {
+                    if (m.scoreA > m.scoreB) aWon = true;
+                    else if (m.scoreB > m.scoreA) bWon = true;
+                } else {
+                    if (m.scoreB > m.scoreA) aWon = true;
+                    else if (m.scoreA > m.scoreB) bWon = true;
+                }
+                if (aWon) return 1; // A better
+                if (bWon) return -1; // B better
+                return 0;
+            }
+            return null;
+        }
+
+        // ---------- GENERATE & PREPARAR PARTIDAS ----------
+        async function generateStructure() {
+            // precisa exatamente 8 times
+            const teams = await getTeamsSnap();
+            if (teams.length !== 8) { alert('É necessário exatamente 8 times cadastrados (atualmente: ' + teams.length + ').'); return; }
+
+            // Apaga matches existentes e cria P1..P12 conforme flag
+            await deleteAllMatches();
+            const order = teams; // usa ordem de criação/registro (você pode alterar)
+            const push = async (code, round, slot, teamA, teamB) => {
+                const match = {
+                    id: uid(),
+                    code,
+                    round,
+                    slot,
+                    teamA: teamA ? teamA.id : null,
+                    teamB: teamB ? teamB.id : null,
+                    scoreA: null,
+                    scoreB: null,
+                    played: false
+                };
+                await addMatchToDB(match);
+            };
+
+            // R1: P1..P4 (A v B, C v D, E v F, G v H)
+            await push('P1', 'R1', 1, order[0], order[1]);
+            await push('P2', 'R1', 2, order[2], order[3]);
+            await push('P3', 'R1', 3, order[4], order[5]);
+            await push('P4', 'R1', 4, order[6], order[7]);
+
+            // R2 placeholders P5..P8 (winners/losers to be filled later)
+            await push('P5', 'R2', 5, null, null);
+            await push('P6', 'R2', 6, null, null);
+            await push('P7', 'R2', 7, null, null);
+            await push('P8', 'R2', 8, null, null);
+
+            // R3 placeholders P9..P12. P11 and P12 obrigatórias. P9/P10 dependem de flag.
+            if (INCLUI_PARTIDAS_OPCIONAIS) {
+                await push('P9', 'R3', 9, null, null);
+                await push('P10', 'R3', 10, null, null);
+            }
+            await push('P11', 'R3', 11, null, null);
+            await push('P12', 'R3', 12, null, null);
+
+            alert('Estrutura gerada (P1..). Agora registre resultados de P1..P4 para atualizar P5..P8 via "Atualizar P5..P8".');
+        }
+
+        // preenche P5..P8 a partir de resultados de P1..P4
+        async function prepareR2() {
+            const teams = await getTeamsSnap();
+            let matches = await getMatchesSnap();
+
+            const find = code => matches.find(m => m.code === code);
+
+            const m1 = find('P1'), m2 = find('P2'), m3 = find('P3'), m4 = find('P4');
+
+            const winner = (m) => {
+                if (!m) return null;
+                if (!m.played) return null;
+                return Number(m.scoreA) > Number(m.scoreB) ? m.teamA : m.teamB;
+            };
+            const loser = (m) => {
+                if (!m) return null;
+                if (!m.played) return null;
+                return Number(m.scoreA) > Number(m.scoreB) ? m.teamB : m.teamA;
+            };
+
+            const w1 = winner(m1), l1 = loser(m1);
+            const w2 = winner(m2), l2 = loser(m2);
+            const w3 = winner(m3), l3 = loser(m3);
+            const w4 = winner(m4), l4 = loser(m4);
+
+            matches = matches.map(m => {
+                if (m.code === 'P5') { m.teamA = w1 || m.teamA; m.teamB = w2 || m.teamB; m.played = false; m.scoreA = null; m.scoreB = null; }
+                if (m.code === 'P6') { m.teamA = w3 || m.teamA; m.teamB = w4 || m.teamB; m.played = false; m.scoreA = null; m.scoreB = null; }
+                if (m.code === 'P7') { m.teamA = l1 || m.teamA; m.teamB = l2 || m.teamB; m.played = false; m.scoreA = null; m.scoreB = null; }
+                if (m.code === 'P8') { m.teamA = l3 || m.teamA; m.teamB = l4 || m.teamB; m.played = false; m.scoreA = null; m.scoreB = null; }
+                return m;
+            });
+
+            // salvar
+            for (const m of matches) {
+                if (['P5', 'P6', 'P7', 'P8'].includes(m.code)) {
+                    await updateMatchInDB(m.id, { teamA: m.teamA || null, teamB: m.teamB || null, played: false, scoreA: null, scoreB: null });
+                }
+            }
+            alert('P5..P8 atualizadas (se P1..P4 tiverem resultados).');
+        }
+
+        // prepara R3 (P9..P12) com base no ranking atual
+        async function prepareR3() {
+            const teams = await getTeamsSnap();
+            let matches = await getMatchesSnap();
+
+            // compute ranking after current played matches
+            const ranked = computeRankingFromData(teams, matches); // best -> worst
+            if (ranked.length !== 8) { alert('Erro: são necessários 8 times cadastrados.'); return; }
+
+            // mapping: P9 = rank8 vs rank7 ; P10 = rank6 vs rank5 ; P11 = rank4 vs rank3 ; P12 = rank2 vs rank1
+            const ids = ranked.map(r => r.id);
+            const assignments = {};
+            if (INCLUI_PARTIDAS_OPCIONAIS) {
+                assignments['P9'] = { teamA: ids[7] || null, teamB: ids[6] || null };
+                assignments['P10'] = { teamA: ids[5] || null, teamB: ids[4] || null };
+            }
+            assignments['P11'] = { teamA: ids[3] || null, teamB: ids[2] || null };
+            assignments['P12'] = { teamA: ids[1] || null, teamB: ids[0] || null };
+
+            // update matches in DB
+            matches = matches.filter(m => ['P9', 'P10', 'P11', 'P12'].includes(m.code));
+            for (const m of matches) {
+                const a = (assignments[m.code] && assignments[m.code].teamA) || null;
+                const b = (assignments[m.code] && assignments[m.code].teamB) || null;
+                await updateMatchInDB(m.id, { teamA: a, teamB: b, played: false, scoreA: null, scoreB: null });
+            }
+            alert('P9..P12 montadas conforme ranking atual.');
+        }
+
+        // ---------- SALVAR PLACAR ----------
+        async function saveScore(matchId, sA, sB) {
+            if (sA === '' || sB === '') { alert('Preencha ambos os scores'); return; }
+            const a = Number(sA), b = Number(sB);
+            if (isNaN(a) || isNaN(b)) { alert('Scores inválidos'); return; }
+            await updateMatchInDB(matchId, { scoreA: a, scoreB: b, played: true });
+            alert('Placar salvo.');
+        }
+
+        // ---------- CRUD TIMES ----------
+        async function deleteTeam(id) {
+            if (!db) {
+                const arr = JSON.parse(localStorage.getItem('teams') || '[]');
+                const filtered = arr.filter(t => t.id !== id);
+                localStorage.setItem('teams', JSON.stringify(filtered));
+                return;
+            }
+            await db.collection('teams').doc(id).delete();
+        }
+
+        // ---------- delete everything ----------
+        async function deleteAllData() {
+            if (!confirm('Confirma apagar todas as teams e matches do Firestore/local?')) return;
+            await deleteAllMatches();
+            await deleteAllTeams();
+            alert('Apagado.');
+        }
+
+        // ---------- listeners/setup UI ----------
+        $(function () {
+            // flag label
+            $('#flagLabel').text(INCLUI_PARTIDAS_OPCIONAIS ? 'true (P9/P10 incluídas)' : 'false (P9/P10 NÃO incluídas)');
+
+            // setup realtime
+            setupRealtime();
+
+            // initial render
+            renderPublic();
+            if (localStorage.getItem('isAdmin')) {
+                $('.admin-only').show();
+                $('#btnLogout').show();
+                $('#btnLogin').hide();
+                renderAdmin();
+            }
+
+            // gen QR
+            genQRCode();
+
+            // login
+            $('#btnLogin').on('click', function () {
+                const u = $('#loginUser').val();
+                const p = $('#loginPass').val();
+                if (u === ADMIN_USER && p === ADMIN_PASS) {
+                    localStorage.setItem('isAdmin', '1');
+                    $('.admin-only').show();
+                    $('#btnLogout').show();
+                    $('#btnLogin').hide();
+                    renderAdmin();
+                } else {
+                    alert('Credenciais inválidas.');
+                }
+            });
+            $('#btnLogout').on('click', function () {
+                localStorage.removeItem('isAdmin');
+                $('.admin-only').hide();
+                $('#btnLogout').hide();
+                $('#btnLogin').show();
+            });
+
+            // add team
+            $('#btnAddTeam').on('click', async function () {
+                const name = $('#teamName').val().trim();
+                if (!name) { alert('Nome do time é obrigatório'); return; }
+                const players = $('#teamPlayers').val().split(',').map(x => x.trim()).filter(Boolean);
+                const t = { id: uid(), name, players };
+                await addTeamToDB(t);
+                $('#teamName').val(''); $('#teamPlayers').val('');
+                renderPublic(); renderAdmin();
+            });
+
+            // clear teams
+            $('#btnClearTeams').on('click', async function () {
+                if (!confirm('Apagar todos os times?')) return;
+                await deleteAllTeams();
+                renderPublic(); renderAdmin();
+            });
+
+            // del team (delegation)
+            $(document).on('click', '.delTeam', async function () {
+                const id = $(this).data('id');
+                if (!confirm('Excluir time?')) return;
+                await deleteTeam(id);
+                renderPublic(); renderAdmin();
+            });
+
+            // generate structure
+            $('#btnGenerate').on('click', async function () {
+                if (!confirm('Gerar estrutura P1.. (isto apagará partidas atuais). Continuar?')) return;
+                await generateStructure();
+                renderPublic(); renderAdmin();
+            });
+
+            $('#btnPrepareR2').on('click', async function () {
+                await prepareR2();
+                renderPublic(); renderAdmin();
+            });
+
+            $('#btnPrepareR3').on('click', async function () {
+                await prepareR3();
+                renderPublic(); renderAdmin();
+            });
+
+            $('#btnDeleteAll').on('click', async function () { await deleteAllData(); renderPublic(); renderAdmin(); });
+
+            $('#btnRefresh').on('click', function () { renderPublic(); renderAdmin(); });
+
+            // save score (delegation)
+            $(document).on('click', '.btnSaveScore', async function () {
+                const id = $(this).data('id');
+                const sA = $(`.scoreA[data-id="${id}"]`).val();
+                const sB = $(`.scoreB[data-id="${id}"]`).val();
+                await saveScore(id, sA, sB);
+                renderPublic(); renderAdmin();
+            });
+
+            // realtime fallback: if no DB, poll localStorage changes occasionally
+            if (!db) {
+                setInterval(() => { renderPublic(); renderAdmin(); }, 1500);
+            }
+        });
+
+        // QR code generator
+        function genQRCode() {
+            const url = window.location.href;
+            const qr = `https://chart.googleapis.com/chart?cht=qr&chs=300x300&chl=${encodeURIComponent(url)}`;
+            $('#qrcode').html(`<img src="${qr}" alt="QR"><div class="small">Link: <a href="${url}" target="_blank">${url}</a></div>`);
+        }
+    </script>
+</body>
+
+</html>
