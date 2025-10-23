@@ -187,6 +187,144 @@
             flex-wrap: wrap;
         }
 
+        /* NOVO LAYOUT PARA PARTIDAS - MOBILE FIRST */
+        .match-item {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        .match-item:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .match-code {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 0.9rem;
+            background: #e0e7ff;
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        .match-status {
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .match-status.finished {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .match-status.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .match-content {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 8px 0;
+        }
+
+        .team {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .team-name {
+            font-weight: 500;
+            text-align: center;
+            font-size: 0.9rem;
+            line-height: 1.2;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            min-height: 2.4em;
+        }
+
+        .team-score {
+            font-weight: bold;
+            font-size: 1.1rem;
+            padding: 2px 8px;
+            border-radius: 6px;
+            background: #f8fafc;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .team-score.winner {
+            background: var(--primary);
+            color: white;
+        }
+
+        .vs-divider {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 4px;
+            min-width: 40px;
+        }
+
+        .vs-text {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 600;
+            background: #f1f5f9;
+            padding: 4px 8px;
+            border-radius: 8px;
+        }
+
+        .match-pending-text {
+            text-align: center;
+            color: #64748b;
+            font-style: italic;
+            font-size: 0.85rem;
+            padding: 4px;
+            background: #f8fafc;
+            border-radius: 4px;
+        }
+
+        .match-result {
+            text-align: center;
+            color: #059669;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        /* Estados visuais diferentes */
+        .match-finished {
+            border-left: 3px solid var(--success);
+        }
+
+        .match-pending {
+            border-left: 3px solid #f59e0b;
+        }
+
         .small {
             font-size: 0.85rem;
             color: #64748b;
@@ -379,6 +517,123 @@
             margin: 15px 0;
         }
 
+        /* MELHORIA: Cards para classificação em mobile */
+        .ranking-cards {
+            display: none;
+        }
+
+        .ranking-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+
+        .ranking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .ranking-position {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .ranking-team {
+            font-weight: 600;
+            flex: 1;
+            margin: 0 10px;
+        }
+
+        .ranking-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            font-size: 0.85rem;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* MELHORIA: Layout melhor para gerenciar partidas em mobile */
+        .admin-match-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+
+        .admin-match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .admin-match-teams {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .admin-match-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .loading-text {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+            font-style: italic;
+        }
+
+        /* Animações */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Media Queries para responsividade */
+        @media (max-width: 768px) {
+            .ranking-table {
+                display: none;
+            }
+
+            .ranking-cards {
+                display: block;
+            }
+
+            .admin-match-header {
+                flex-direction: column;
+            }
+
+            .admin-match-controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .score-input {
+                flex: 1;
+            }
+        }
+
         @media (max-width: 480px) {
             .admin-actions {
                 grid-template-columns: 1fr;
@@ -397,6 +652,84 @@
 
             .match-controls {
                 justify-content: center;
+            }
+
+            .admin-match-controls {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .admin-match-controls .score-input {
+                width: 100%;
+            }
+
+            /* Layout vertical para partidas em mobile */
+            .match-content {
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .team {
+                flex-direction: row;
+                justify-content: space-between;
+                width: 100%;
+                padding: 4px 0;
+            }
+
+            .team-name {
+                text-align: left;
+                -webkit-line-clamp: 1;
+                min-height: auto;
+            }
+
+            .vs-divider {
+                margin: 2px 0;
+            }
+
+            .vs-text {
+                transform: rotate(0deg);
+                padding: 2px 12px;
+            }
+
+            .team-score {
+                font-size: 1rem;
+                min-width: 25px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            body {
+                padding: 8px;
+            }
+
+            .card {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.3rem;
+            }
+
+            h2 {
+                font-size: 1.1rem;
+            }
+
+            .match-header {
+                flex-direction: column;
+                gap: 4px;
+                align-items: flex-start;
+            }
+
+            .match-status {
+                align-self: flex-end;
+            }
+
+            .team-name {
+                font-size: 0.85rem;
+            }
+
+            .team-score {
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -419,7 +752,7 @@
     </div>
 
     <!-- Aba Pública -->
-    <div id="public-tab" class="tab-content active">
+    <div id="public-tab" class="tab-content">
         <div class="card">
             <h2>🎉 Bem-vindo ao Torneio de Vôlei Quarteto!</h2>
             <p>Este é o sistema de controle e acompanhamento do torneio. Acompanhe aqui os resultados em tempo real!</p>
@@ -480,20 +813,27 @@
     <div id="ranking-tab" class="tab-content">
         <div class="card">
             <h2>🏆 Classificação</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Pos</th>
-                        <th>Time</th>
-                        <th>Vitórias</th>
-                        <th>Derrotas</th>
-                        <th>Pontos Pró</th>
-                        <th>Pontos Contra</th>
-                        <th>Saldo</th>
-                    </tr>
-                </thead>
-                <tbody id="publicRanking"></tbody>
-            </table>
+
+            <!-- Tabela para desktop -->
+            <div class="ranking-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Pos</th>
+                            <th>Time</th>
+                            <th>Vitórias</th>
+                            <th>Derrotas</th>
+                            <th>Pontos Pró</th>
+                            <th>Pontos Contra</th>
+                            <th>Saldo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="publicRanking"></tbody>
+                </table>
+            </div>
+
+            <!-- Cards para mobile -->
+            <div class="ranking-cards" id="publicRankingCards"></div>
         </div>
     </div>
 
@@ -555,7 +895,7 @@
                     <strong>Instruções:</strong>
                     <ol>
                         <li>Cadastre os times na aba "Criar Times"</li>
-                        <li>Gere as partidas com o botão acima</li>
+                        <li>Gere as partidas com os botões acima</li>
                         <li>Gerencie os placares na aba "Gerenciar Partidas"</li>
                     </ol>
                 </div>
@@ -631,6 +971,12 @@
             measurementId: "G-HZ1YZKEC6J"
         };
 
+        function showLoading() {
+            $('#publicMatches').html('<div class="loading-text">🔄 Atualizando...</div>');
+            $('#publicRanking').html('<div class="loading-text">🔄 Atualizando...</div>');
+            $('#publicTeams').html('<div class="loading-text">🔄 Atualizando...</div>');
+        }
+
         // Inicializar Firebase
         let db;
         try {
@@ -695,6 +1041,9 @@
         function setupRealtime() {
             if (!db) return;
 
+            // Mostrar loading quando começar a escutar mudanças
+            showLoading();
+
             db.collection('teams').onSnapshot((snapshot) => {
                 renderPublic();
                 if (isAdmin()) {
@@ -739,12 +1088,18 @@
 
                 // Classificação - COM DERROTAS
                 const ranked = computeRankingFromData(teams, matches);
+
+                // Tabela para desktop
                 $('#publicRanking').empty();
+                // Cards para mobile
+                $('#publicRankingCards').empty();
+
                 ranked.forEach((r, index) => {
                     const position = index + 1;
                     const medal = position === 1 ? '🥇' : position === 2 ? '🥈' : position === 3 ? '🥉' : position;
                     const totalMatches = (r.wins || 0) + (r.losses || 0);
 
+                    // Tabela desktop
                     $('#publicRanking').append(
                         `<tr>
                             <td><strong>${medal}</strong></td>
@@ -755,6 +1110,38 @@
                             <td>${r.conceded || 0}</td>
                             <td>${(r.scored || 0) - (r.conceded || 0)}</td>
                         </tr>`
+                    );
+
+                    // Cards mobile
+                    $('#publicRankingCards').append(
+                        `<div class="ranking-card">
+                            <div class="ranking-header">
+                                <div class="ranking-position">${medal}</div>
+                                <div class="ranking-team">${r.name}</div>
+                            </div>
+                            <div class="ranking-stats">
+                                <div class="stat-item">
+                                    <span>Vitórias:</span>
+                                    <span>${r.wins || 0}</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span>Derrotas:</span>
+                                    <span>${r.losses || 0}</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span>Pontos Pró:</span>
+                                    <span>${r.scored || 0}</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span>Pontos Contra:</span>
+                                    <span>${r.conceded || 0}</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span>Saldo:</span>
+                                    <span>${(r.scored || 0) - (r.conceded || 0)}</span>
+                                </div>
+                            </div>
+                        </div>`
                     );
                 });
 
@@ -799,7 +1186,7 @@
                     roundMatches.forEach(m => {
                         const teamA = getNameById(teams, m.teamA);
                         const teamB = getNameById(teams, m.teamB);
-                        const score = m.status === 'finalizado' ? ` — ${m.scoreA} x ${m.scoreB}` : ' — A definir';
+                        const score = m.status === 'finalizado' ? `${m.scoreA} x ${m.scoreB}` : 'A definir';
                         const badgeClass = m.status === 'finalizado' ? 'ok' : 'muted';
 
                         // Alterar nomes P11 e P12
@@ -807,11 +1194,35 @@
                         if (m.matchCode === 'P11') matchCode = 'Semifinal';
                         if (m.matchCode === 'P12') matchCode = 'Final';
 
+                        // MELHORIA: Novo layout responsivo para partidas
                         $('#publicMatches').append(
-                            `<div class="match-row">
-                                <strong>${matchCode}</strong> 
-                                <span>${teamA || '—'} vs ${teamB || '—'}</span>
-                                <span class="${badgeClass}">${score}</span>
+                            `<div class="match-item ${m.status === 'finalizado' ? 'match-finished' : 'match-pending'}">
+                                <div class="match-header">
+                                    <span class="match-code">${matchCode}</span>
+                                    ${m.status === 'finalizado' ?
+                                '<span class="match-status finished">✓ Finalizado</span>' :
+                                '<span class="match-status pending">⏳ Pendente</span>'
+                            }
+                                </div>
+                                <div class="match-content">
+                                    <div class="team team-a">
+                                        <span class="team-name">${teamA || '—'}</span>
+                                        ${m.status === 'finalizado' ? `<span class="team-score ${m.scoreA > m.scoreB ? 'winner' : ''}">${m.scoreA}</span>` : ''}
+                                    </div>
+                                    
+                                    <div class="vs-divider">
+                                        <span class="vs-text">vs</span>
+                                    </div>
+                                    
+                                    <div class="team team-b">
+                                        <span class="team-name">${teamB || '—'}</span>
+                                        ${m.status === 'finalizado' ? `<span class="team-score ${m.scoreB > m.scoreA ? 'winner' : ''}">${m.scoreB}</span>` : ''}
+                                    </div>
+                                </div>
+                                ${m.status !== 'finalizado' ?
+                                '<div class="match-pending-text">A definir</div>' :
+                                '<div class="match-result">Placar final</div>'
+                            }
                             </div>`
                         );
                     });
@@ -905,16 +1316,19 @@
                         if (m.matchCode === 'P11') matchCode = 'Semifinal';
                         if (m.matchCode === 'P12') matchCode = 'Final';
 
+                        // MELHORIA: Layout melhorado para admin de partidas
                         const html = `
-                    <div style="margin-bottom:16px; padding:12px; border:1px solid var(--border); border-radius:8px;">
-                        <div class="flex">
-                            <strong>${matchCode}</strong>
-                            ${statusBadge}
+                    <div class="admin-match-card">
+                        <div class="admin-match-header">
+                            <div>
+                                <strong>${matchCode}</strong>
+                                ${statusBadge}
+                            </div>
+                            <div class="admin-match-teams">
+                                <strong>${teamA || '—'}</strong> vs <strong>${teamB || '—'}</strong>
+                            </div>
                         </div>
-                        <div style="margin:8px 0">
-                            <strong>${teamA || '—'}</strong> vs <strong>${teamB || '—'}</strong>
-                        </div>
-                        <div class="match-controls">
+                        <div class="admin-match-controls">
                             <input class="score-input scoreA" data-id="${m.id}" 
                                    placeholder="A" value="${m.scoreA || ''}" 
                                    ${!teamA || !teamB ? 'disabled' : ''}>
@@ -1283,8 +1697,17 @@
 
         // --- SISTEMA DE NAVEGAÇÃO ---
         function setupNavigation() {
+            // Recuperar aba salva ou usar 'public' como padrão
+            const savedTab = localStorage.getItem('currentTab') || 'public';
+            $('#navSelect').val(savedTab);
+            $('.tab-content').removeClass('active');
+            $(`#${savedTab}-tab`).addClass('active');
+
             $('#navSelect').on('change', function () {
                 const tabId = $(this).val();
+
+                // Salvar aba no localStorage
+                localStorage.setItem('currentTab', tabId);
 
                 // Remover classe active de todos os conteúdos
                 $('.tab-content').removeClass('active');
