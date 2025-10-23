@@ -9,192 +9,644 @@
     <style>
         :root {
             font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --danger: #dc2626;
+            --success: #16a34a;
+            --border: #e5e7eb;
+            --bg-card: #ffffff;
+            --bg-tab: #f8fafc;
+            --tab-active: #ffffff;
         }
 
         body {
-            max-width: 1100px;
-            margin: 18px auto;
+            max-width: 100%;
+            margin: 0 auto;
             padding: 12px;
+            background-color: #f8fafc;
+            font-size: 14px;
         }
 
         h1 {
-            margin: 0 0 12px;
+            margin: 0 0 15px;
+            color: #1e293b;
+            text-align: center;
+            font-size: 1.5rem;
         }
 
-        .row {
+        h2 {
+            color: #334155;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        h3 {
+            color: #475569;
+            margin-top: 20px;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        /* Sistema de Abas */
+        .tabs {
             display: flex;
-            gap: 12px;
-            flex-wrap: wrap
+            background: var(--bg-tab);
+            border-radius: 12px 12px 0 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 0;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 12px 16px;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            font-weight: 500;
+            color: #64748b;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+            flex: 1;
+            min-width: 0;
+            text-align: center;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .tab:hover {
+            color: var(--primary);
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+            background: var(--tab-active);
+        }
+
+        .tab-content {
+            display: none;
+            padding: 15px;
+            background: var(--bg-card);
+            border-radius: 0 12px 12px 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .tab-content.active {
+            display: block;
         }
 
         .card {
-            border: 1px solid #ddd;
-            padding: 12px;
-            border-radius: 8px;
-            background: #fff;
-            flex: 1 1 320px
+            border: 1px solid var(--border);
+            padding: 15px;
+            border-radius: 12px;
+            background: var(--bg-card);
+            margin-bottom: 15px;
         }
 
         button {
-            padding: 6px 10px;
-            border-radius: 6px;
+            padding: 10px 16px;
+            border-radius: 8px;
             border: 1px solid #888;
             background: #f3f3f3;
-            cursor: pointer
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            font-size: 0.9rem;
         }
 
-        input,
-        select,
-        textarea {
-            padding: 6px;
-            border-radius: 6px;
-            border: 1px solid #ccc
+        button:hover {
+            background: #e5e5e5;
+        }
+
+        button.primary {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        button.primary:hover {
+            background: var(--primary-dark);
+        }
+
+        button.danger {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger);
+        }
+
+        button.small {
+            padding: 6px 10px;
+            font-size: 0.8rem;
+        }
+
+        input, select, textarea {
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 1rem;
         }
 
         table {
             width: 100%;
-            border-collapse: collapse
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 0.9rem;
         }
 
-        th,
-        td {
-            border: 1px solid #eee;
-            padding: 6px;
+        th, td {
+            border: 1px solid var(--border);
+            padding: 10px 8px;
             text-align: left;
-            font-size: 14px
         }
 
-        .admin-only {
-            display: none
+        th {
+            background-color: #f8fafc;
+            font-weight: 600;
+        }
+
+        .qrcode {
+            text-align: center;
+            margin: 15px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border);
         }
 
         .qrcode img {
-            max-width: 150px
+            max-width: 200px;
+            height: auto;
         }
 
         .match-row {
             display: flex;
             gap: 8px;
             align-items: center;
-            margin-bottom: 6px
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            background: #f8fafc;
+            flex-wrap: wrap;
         }
 
         .small {
-            font-size: 13px;
-            color: #444
+            font-size: 0.85rem;
+            color: #64748b;
         }
 
         .danger {
-            color: #b20000
+            color: var(--danger);
         }
 
         .ok {
-            color: #007700
+            color: var(--success);
         }
 
         .badge {
             display: inline-block;
-            padding: 2px 6px;
+            padding: 4px 8px;
             border-radius: 999px;
-            background: #eef;
+            background: #e0e7ff;
+            color: var(--primary);
+            font-size: 0.75rem;
+            font-weight: 500;
             margin-left: 6px
         }
 
         .muted {
-            color: #666;
-            font-size: 13px
+            color: #64748b;
+            font-size: 0.85rem
         }
 
         .flex {
             display: flex;
-            gap: 8px;
-            align-items: center
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
         }
 
         .col {
             display: flex;
             flex-direction: column;
-            gap: 6px
+            gap: 10px
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 16px 0;
+        }
+
+        .login-form {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .match-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .score-input {
+            width: 60px;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .team-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .team-list li {
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+            font-size: 1rem;
+        }
+
+        .status-bar {
+            background: #f1f5f9;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .admin-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .team-card {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: white;
+        }
+
+        .team-card h4 {
+            margin: 0 0 8px 0;
+            color: #1e293b;
+            font-size: 1.1rem;
+        }
+
+        .players-list {
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        .round-section {
+            margin-bottom: 25px;
+        }
+
+        .round-title {
+            background: #e0e7ff;
+            color: var(--primary);
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .admin-only {
+            display: none;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        @media (max-width: 480px) {
+            .tab {
+                padding: 10px 8px;
+                font-size: 0.75rem;
+            }
+            
+            .tab-content {
+                padding: 12px;
+            }
+            
+            .card {
+                padding: 12px;
+            }
+            
+            .admin-actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .flex {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .status-bar {
+                flex-direction: column;
+                gap: 8px;
+                align-items: flex-start;
+            }
+            
+            .match-controls {
+                justify-content: center;
+            }
         }
     </style>
 </head>
 
 <body>
-    <h1>Torneio Quartetos — Controle</h1>
+    <h1>🏐 Torneio Quartetos</h1>
 
-    <div class="row">
-        <div class="card" id="publicCard">
-            <h2>Visão pública</h2>
-            <p class="small">Escaneie o QR ou acesse o link para acompanhar em tempo real.</p>
-            <div class="qrcode" id="qrcode"></div>
+    <!-- Sistema de Abas -->
+    <div class="tabs">
+        <button class="tab active" data-tab="public">Público</button>
+        <button class="tab" data-tab="teams">Times</button>
+        <button class="tab" data-tab="matches">Partidas</button>
+        <button class="tab" data-tab="ranking">Classificação</button>
+        <button class="tab" data-tab="admin">Administração</button>
+        <button class="tab admin-only" data-tab="create-teams">Criar Times</button>
+        <button class="tab admin-only" data-tab="manage-matches">Gerenciar Partidas</button>
+    </div>
 
-            <h3>Times / Formação</h3>
-            <ul id="publicTeams" class="muted"></ul>
+    <!-- Aba Pública -->
+    <div id="public-tab" class="tab-content active">
+        <div class="card">
+            <h2>🎉 Bem-vindo ao Torneio de Vôlei Quarteto!</h2>
+            <p>Este é o sistema de controle e acompanhamento do torneio. Acompanhe aqui os resultados em tempo real!</p>
+            
+            <div class="qrcode">
+                <h3>📱 Acesso Rápido</h3>
+                <p class="small">Escaneie este QR Code para acessar o site em outro dispositivo:</p>
+                <div id="qrcode"></div>
+            </div>
+        </div>
 
-            <h3>Classificação (Vitórias → Confronto direto → Saldo)</h3>
+        <div class="card">
+            <h3>📋 Regras do Campeonato</h3>
+            <div class="col">
+                <div class="flex">
+                    <strong>🏐 Formato:</strong>
+                    <span>Quartetos (4 jogadores por time)</span>
+                </div>
+                <div class="flex">
+                    <strong>⚔️ Confrontos:</strong>
+                    <span>1 set de 15 pontos cada</span>
+                </div>
+                <div class="flex">
+                    <strong>🏆 Critérios de Desempate:</strong>
+                </div>
+                <div class="small" style="margin-left: 15px;">
+                    <div>1. <strong>Maior número de vitórias</strong></div>
+                    <div>2. <strong>Confronto direto</strong> entre os times empatados</div>
+                    <div>3. <strong>Melhor saldo de pontos</strong> (pontos feitos - pontos sofridos)</div>
+                </div>
+                <div class="flex">
+                    <strong>📊 Partidas:</strong>
+                    <span>12 partidas no total (P9 e P10 são opcionais)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Aba Times -->
+    <div id="teams-tab" class="tab-content">
+        <div class="card">
+            <h2>👥 Times Participantes</h2>
+            <p class="small">Lista de todos os times e seus jogadores</p>
+            <div id="publicTeams"></div>
+        </div>
+    </div>
+
+    <!-- Aba Partidas -->
+    <div id="matches-tab" class="tab-content">
+        <div class="card">
+            <h2>🎯 Partidas do Torneio</h2>
+            <p class="small">Acompanhe todos os jogos e resultados</p>
+            <div id="publicMatches"></div>
+        </div>
+    </div>
+
+    <!-- Aba Classificação -->
+    <div id="ranking-tab" class="tab-content">
+        <div class="card">
+            <h2>🏆 Classificação</h2>
             <table>
                 <thead>
                     <tr>
+                        <th>Pos</th>
                         <th>Time</th>
-                        <th>Vit.</th>
+                        <th>Vitórias</th>
+                        <th>Pontos Pró</th>
+                        <th>Pontos Contra</th>
                         <th>Saldo</th>
                     </tr>
                 </thead>
                 <tbody id="publicRanking"></tbody>
             </table>
-
-            <h3>Partidas</h3>
-            <div id="publicMatches" class="muted"></div>
         </div>
+    </div>
 
-        <div class="card admin-only" id="adminCard">
-            <h2>Área Admin</h2>
-            <div class="flex">
-                <div>
-                    <label>Usuário <input id="loginUser" placeholder="user"></label>
-                    <label>Senha <input id="loginPass" type="password" placeholder="pass"></label>
-                    <button id="btnLogin">Entrar</button>
-                    <button id="btnLogout" style="display:none">Sair</button>
+    <!-- Aba Administração -->
+    <div id="admin-tab" class="tab-content">
+        <div class="card">
+            <h2>🔐 Área Administrativa</h2>
+            
+            <div id="login-section">
+                <div class="login-form">
+                    <h3>Login</h3>
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="loginUser">Usuário</label>
+                            <input id="loginUser" placeholder="admin" value="admin">
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPass">Senha</label>
+                            <input id="loginPass" type="password" placeholder="senha123" value="senha123">
+                        </div>
+                        <div class="flex">
+                            <button id="btnLogin" class="primary">Entrar</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <hr>
+            <div id="admin-section" style="display: none;">
+                <div class="status-bar ok">
+                    <div>
+                        <strong>✅ Logado como Administrador</strong>
+                    </div>
+                    <button id="btnLogout" class="danger small">Sair</button>
+                </div>
 
-            <h3>Config</h3>
-            <div class="col">
-                <label>Flag: <strong id="flagLabel"></strong></label>
-                <small class="muted">Se false, P9 e P10 não serão criadas.</small>
+                <h3>⚙️ Configurações</h3>
+                <div class="card">
+                    <div class="toggle-container">
+                        <label for="toggleOptional">Partidas opcionais P9/P10:</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggleOptional">
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span id="flagLabel" class="badge">SIM</span>
+                    </div>
+                    <small class="muted">Se ativado, as partidas P9 e P10 serão criadas.</small>
+                </div>
+
+                <h3>🛠️ Ferramentas</h3>
+                <div class="admin-actions">
+                    <button id="btnGenerate" class="primary">Gerar Partidas</button>
+                    <button id="btnPrepareR2">Atualizar R2</button>
+                    <button id="btnPrepareR3">Montar R3</button>
+                    <button id="btnRefresh">Atualizar Dados</button>
+                    <button id="btnDeleteAll" class="danger">Apagar Tudo</button>
+                </div>
+                
+                <div class="small muted">
+                    <strong>Instruções:</strong>
+                    <ol>
+                        <li>Cadastre os times na aba "Criar Times"</li>
+                        <li>Gere as partidas com o botão acima</li>
+                        <li>Gerencie os placares na aba "Gerenciar Partidas"</li>
+                    </ol>
+                </div>
             </div>
+        </div>
+    </div>
 
-            <hr>
-            <h3>Gerenciar Times</h3>
-            <div class="col">
-                <input id="teamName" placeholder="Nome do time (obrigatório)">
-                <input id="teamPlayers" placeholder="Jogadores (separar por vírgula)">
-                <div class="flex">
-                    <button id="btnAddTeam">Adicionar time</button>
-                    <button id="btnClearTeams" class="danger">Limpar times</button>
+    <!-- Aba Criar Times (Admin) -->
+    <div id="create-teams-tab" class="tab-content admin-only">
+        <div class="card">
+            <h2>👥 Gerenciar Times</h2>
+            
+            <div id="teams-login-section">
+                <div class="login-form">
+                    <h3>Login Necessário</h3>
+                    <p class="muted">Faça login na aba Administração para gerenciar os times.</p>
                 </div>
             </div>
 
-            <h4>Times registrados</h4>
-            <ul id="adminTeams"></ul>
-
-            <hr>
-            <h3>Partidas (Admin)</h3>
-            <div class="col">
-                <div class="flex">
-                    <button id="btnGenerate">Gerar P1..P12 (estrutura)</button>
-                    <button id="btnPrepareR2">Atualizar P5..P8 a partir de resultados R1</button>
-                    <button id="btnPrepareR3">Montar P9..P12 conforme ranking atual</button>
+            <div id="teams-admin-section" style="display: none;">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="teamName">Nome do Time</label>
+                        <input id="teamName" placeholder="Ex: Quarteto Azul">
+                    </div>
+                    <div class="form-group">
+                        <label for="teamPlayers">Jogadores (separar por vírgula)</label>
+                        <input id="teamPlayers" placeholder="Ex: Ana, Bia, Carla, Duda">
+                    </div>
+                    <div class="flex">
+                        <button id="btnAddTeam" class="primary">Adicionar Time</button>
+                        <button id="btnClearTeams" class="danger">Limpar Todos os Times</button>
+                    </div>
                 </div>
-                <div class="flex">
-                    <button id="btnDeleteAll" class="danger">Apagar tudo (teams & matches)</button>
-                    <button id="btnRefresh">Forçar refresh</button>
+
+                <h3>📋 Times Registrados</h3>
+                <div id="adminTeams"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Aba Gerenciar Partidas (Admin) -->
+    <div id="manage-matches-tab" class="tab-content admin-only">
+        <div class="card">
+            <h2>⚽ Gerenciar Partidas</h2>
+            
+            <div id="matches-login-section">
+                <div class="login-form">
+                    <h3>Login Necessário</h3>
+                    <p class="muted">Faça login na aba Administração para gerenciar as partidas.</p>
                 </div>
             </div>
 
-            <div id="adminMatches" style="margin-top:10px"></div>
+            <div id="matches-admin-section" style="display: none;">
+                <div class="admin-actions">
+                    <button id="btnGenerate2" class="primary">Gerar Partidas</button>
+                    <button id="btnPrepareR2-2">Atualizar R2</button>
+                    <button id="btnPrepareR3-2">Montar R3</button>
+                </div>
+
+                <h3>🎯 Controle de Partidas</h3>
+                <div id="adminMatches"></div>
+            </div>
         </div>
     </div>
 
@@ -206,64 +658,51 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
 
     <script>
-        /*
-          CONFIGURAÇÕES - modificar antes de usar:
-          1) Cole sua firebaseConfig abaixo.
-          2) Ajuste ADMIN_USER e ADMIN_PASS.
-          3) Ajuste INCLUI_PARTIDAS_OPCIONAIS (true/false).
-          4) Habilite Firestore no console do Firebase.
-        */
+        // --- CONFIGURAÇÕES ---
+        const ADMIN_USER = "admin";
+        const ADMIN_PASS = "senha123";
+        let INCLUI_PARTIDAS_OPCIONAIS = true; // Agora é uma variável, não constante
 
-        // --- ADMIN LOGIN (chumbado) ---
-        const ADMIN_USER = "admin";      // altere aqui
-        const ADMIN_PASS = "senha123";   // altere aqui
-
-        // --- FLAG: incluir P9 e P10? true = sim, false = não ---
-        const INCLUI_PARTIDAS_OPCIONAIS = true; // <--- altera aqui
-
-        // --- FIREBASE CONFIG (cole sua config do Firebase) ---
         const firebaseConfig = {
-            // COLE AQUI SUA CONFIG DO FIREBASE (projectId, apiKey, etc)
-            /* example:
-            apiKey: "xxx",
-            authDomain: "xxx.firebaseapp.com",
-            projectId: "xxx",
-            storageBucket: "xxx.appspot.com",
-            messagingSenderId: "xxx",
-            appId: "1:xxx:web:yyy"
-            */
+            apiKey: "AIzaSyAR-_FoaRE956Kg3hlC43P6wRST1vRA56w",
+            authDomain: "quarteto-237af.firebaseapp.com",
+            projectId: "quarteto-237af",
+            storageBucket: "quarteto-237af.firebasestorage.app",
+            messagingSenderId: "239544086557",
+            appId: "1:239544086557:web:97f14596ad0a72ebd4d6f4",
+            measurementId: "G-HZ1YZKEC6J"
         };
 
-        // init firebase
+        // Inicializar Firebase
         let db;
-        if (firebaseConfig && firebaseConfig.apiKey) {
+        try {
             firebase.initializeApp(firebaseConfig);
             db = firebase.firestore();
-        } else {
-            console.warn("Firestore não configurado. Rode em modo local? Aplique config.");
-            db = null;
+            console.log("Firestore inicializado com sucesso");
+        } catch (error) {
+            console.error("Erro ao inicializar Firebase:", error);
+            alert("Erro na configuração do Firebase. Verifique o console.");
         }
 
-        // util
-        function uid() { return 'id' + Math.random().toString(36).slice(2, 9); }
+        // Utilitários
+        function uid() { 
+            return 'id' + Math.random().toString(36).slice(2, 9); 
+        }
 
-        // ---------- Firestore helpers (fallback para localStorage se db===null) ----------
+        // --- FUNÇÕES FIREBASE ---
         async function addTeamToDB(team) {
-            if (!db) {
-                const arr = JSON.parse(localStorage.getItem('teams') || '[]');
-                arr.push(team);
-                localStorage.setItem('teams', JSON.stringify(arr));
-                return;
-            }
+            if (!db) throw new Error("Firestore não inicializado");
             await db.collection('teams').doc(team.id).set(team);
         }
+
         async function getTeamsSnap() {
-            if (!db) return JSON.parse(localStorage.getItem('teams') || '[]');
+            if (!db) throw new Error("Firestore não inicializado");
             const snap = await db.collection('teams').get();
-            return snap.docs.map(d => d.data());
+            return snap.docs.map(d => ({ id: d.id, ...d.data() }));
         }
+
         async function deleteAllTeams() {
-            if (!db) { localStorage.removeItem('teams'); return; }
+            if (!db) throw new Error("Firestore não inicializado");
             const snap = await db.collection('teams').get();
             const batch = db.batch();
             snap.forEach(doc => batch.delete(doc.ref));
@@ -271,418 +710,759 @@
         }
 
         async function addMatchToDB(match) {
-            if (!db) {
-                const arr = JSON.parse(localStorage.getItem('matches') || '[]');
-                arr.push(match);
-                localStorage.setItem('matches', JSON.stringify(arr));
-                return;
-            }
+            if (!db) throw new Error("Firestore não inicializado");
             await db.collection('matches').doc(match.id).set(match);
         }
+
         async function updateMatchInDB(id, patch) {
-            if (!db) {
-                const arr = JSON.parse(localStorage.getItem('matches') || '[]');
-                const idx = arr.findIndex(m => m.id === id);
-                if (idx >= 0) { arr[idx] = Object.assign({}, arr[idx], patch); localStorage.setItem('matches', JSON.stringify(arr)); }
-                return;
-            }
+            if (!db) throw new Error("Firestore não inicializado");
             await db.collection('matches').doc(id).update(patch);
         }
+
         async function getMatchesSnap() {
-            if (!db) return JSON.parse(localStorage.getItem('matches') || '[]');
+            if (!db) throw new Error("Firestore não inicializado");
             const snap = await db.collection('matches').get();
-            return snap.docs.map(d => d.data());
+            return snap.docs.map(d => ({ id: d.id, ...d.data() }));
         }
+
         async function deleteAllMatches() {
-            if (!db) { localStorage.removeItem('matches'); return; }
+            if (!db) throw new Error("Firestore não inicializado");
             const snap = await db.collection('matches').get();
             const batch = db.batch();
             snap.forEach(doc => batch.delete(doc.ref));
             await batch.commit();
         }
 
-        // --------- realtime listeners (se Firestore estiver ativo) ----------
+        // --- LISTENERS EM TEMPO REAL ---
         function setupRealtime() {
-            if (!db) return; // fallback localStorage
-            db.collection('teams').onSnapshot(() => renderPublic());
-            db.collection('matches').onSnapshot(() => renderPublic());
+            if (!db) return;
+            
+            db.collection('teams').onSnapshot((snapshot) => {
+                updateStatus();
+                renderPublic();
+                if (isAdmin()) {
+                    renderAdmin();
+                }
+            });
+            
+            db.collection('matches').onSnapshot((snapshot) => {
+                updateStatus();
+                renderPublic();
+                if (isAdmin()) {
+                    renderAdmin();
+                }
+            });
         }
 
-        // ---------- RENDER PUBLIC ----------
+        function isAdmin() {
+            return localStorage.getItem('isAdmin') === 'true';
+        }
+
+        function updateStatus() {
+            getTeamsSnap().then(teams => {
+                $('#teams-count').text(teams.length);
+            });
+            
+            getMatchesSnap().then(matches => {
+                $('#matches-count').text(matches.length);
+            });
+        }
+
+        // --- RENDERIZAÇÃO PÚBLICA ---
         async function renderPublic() {
-            const teams = await getTeamsSnap();
-            const matches = await getMatchesSnap();
+            try {
+                const teams = await getTeamsSnap();
+                const matches = await getMatchesSnap();
 
-            // Teams list
-            $('#publicTeams').empty();
-            teams.forEach(t => $('#publicTeams').append(`<li><strong>${t.name}</strong> <span class="muted">(${(t.players || []).join(', ')})</span></li>`));
+                // Lista de times - JOGADORES EM ORDEM ALFABÉTICA
+                $('#publicTeams').empty();
+                teams.forEach(t => {
+                    // Ordenar jogadores alfabeticamente
+                    const playersSorted = [...(t.players || [])].sort((a, b) => a.localeCompare(b));
+                    
+                    $('#publicTeams').append(
+                        `<div class="team-card">
+                            <h4>${t.name}</h4>
+                            <div class="players-list">
+                                ${playersSorted.join(', ')}
+                            </div>
+                        </div>`
+                    );
+                });
 
-            // Ranking
-            const ranked = computeRankingFromData(teams, matches);
-            $('#publicRanking').empty();
-            ranked.forEach(r => {
-                $('#publicRanking').append(`<tr><td>${r.name}</td><td>${r.wins || 0}</td><td>${(r.scored || 0) - (r.conceded || 0)}</td></tr>`);
-            });
+                // Classificação
+                const ranked = computeRankingFromData(teams, matches);
+                $('#publicRanking').empty();
+                ranked.forEach((r, index) => {
+                    const position = index + 1;
+                    const medal = position === 1 ? '🥇' : position === 2 ? '🥈' : position === 3 ? '🥉' : position;
+                    
+                    $('#publicRanking').append(
+                        `<tr>
+                            <td><strong>${medal}</strong></td>
+                            <td><strong>${r.name}</strong></td>
+                            <td>${r.wins || 0}</td>
+                            <td>${r.scored || 0}</td>
+                            <td>${r.conceded || 0}</td>
+                            <td>${(r.scored || 0) - (r.conceded || 0)}</td>
+                        </tr>`
+                    );
+                });
 
-            // Matches
-            $('#publicMatches').empty();
-            matches.sort((a, b) => (a.slot || 0) - (b.slot || 0)).forEach(m => {
-                const teamA = getNameById(teams, m.teamA);
-                const teamB = getNameById(teams, m.teamB);
-                const score = m.played ? ` — ${m.scoreA} x ${m.scoreB}` : '';
-                $('#publicMatches').append(`<div class="match-row"><strong>${m.code}</strong> ${teamA || '—'} vs ${teamB || '—'} ${score} <span class="badge">${m.round || ''}</span></div>`);
-            });
+                // Partidas - ORDENADAS CORRETAMENTE
+                $('#publicMatches').empty();
+                
+                // Agrupar partidas por rodada
+                const matchesByRound = {};
+                matches.forEach(m => {
+                    if (!matchesByRound[m.round]) {
+                        matchesByRound[m.round] = [];
+                    }
+                    matchesByRound[m.round].push(m);
+                });
+                
+                // Ordenar rodadas
+                const rounds = Object.keys(matchesByRound).sort();
+                
+                // Para cada rodada, ordenar partidas numericamente
+                rounds.forEach(round => {
+                    const roundMatches = matchesByRound[round]
+                        .sort((a, b) => {
+                            // Extrair número do código da partida (P1, P2, etc)
+                            const numA = parseInt(a.matchCode.replace('P', ''));
+                            const numB = parseInt(b.matchCode.replace('P', ''));
+                            return numA - numB;
+                        });
+                    
+                    let roundTitle = "";
+                    if (round === "1") roundTitle = "Rodada 1";
+                    else if (round === "2") roundTitle = "Rodada 2";
+                    else if (round === "3") roundTitle = "Finais";
+                    else roundTitle = `Rodada ${round}`;
+                    
+                    $('#publicMatches').append(`<div class="round-title">${roundTitle}</div>`);
+                    
+                    roundMatches.forEach(m => {
+                        const teamA = getNameById(teams, m.teamA);
+                        const teamB = getNameById(teams, m.teamB);
+                        const score = m.status === 'finalizado' ? ` — ${m.scoreA} x ${m.scoreB}` : ' — A definir';
+                        const badgeClass = m.status === 'finalizado' ? 'ok' : 'muted';
+                        
+                        $('#publicMatches').append(
+                            `<div class="match-row">
+                                <strong>${m.matchCode}</strong> 
+                                <span>${teamA || '—'} vs ${teamB || '—'}</span>
+                                <span class="${badgeClass}">${score}</span>
+                            </div>`
+                        );
+                    });
+                });
+
+            } catch (error) {
+                console.error('Erro ao renderizar dados públicos:', error);
+            }
         }
 
-        // ---------- RENDER ADMIN ----------
+        // --- RENDERIZAÇÃO ADMIN ---
         async function renderAdmin() {
-            const teams = await getTeamsSnap();
-            const matches = await getMatchesSnap();
+            try {
+                const teams = await getTeamsSnap();
+                const matches = await getMatchesSnap();
 
-            // teams list
-            $('#adminTeams').empty();
-            teams.forEach(t => {
-                $('#adminTeams').append(`<li>${t.name} <button class="delTeam" data-id="${t.id}">Excluir</button></li>`);
-            });
+                // Lista de times no admin - JOGADORES EM ORDEM ALFABÉTICA
+                $('#adminTeams').empty();
+                teams.forEach(t => {
+                    // Ordenar jogadores alfabeticamente
+                    const playersSorted = [...(t.players || [])].sort((a, b) => a.localeCompare(b));
+                    $('#adminTeams').append(
+                        `<div class="team-card">
+                            <div class="flex" style="justify-content: space-between; align-items: flex-start;">
+                                <div>
+                                    <h4>${t.name}</h4>
+                                    <div class="players-list">
+                                        ${playersSorted.join(', ')}
+                                    </div>
+                                </div>
+                                <button class="delTeam danger small" data-id="${t.id}">Excluir</button>
+                            </div>
+                        </div>`
+                    );
+                });
 
-            // admin matches with score inputs
-            $('#adminMatches').empty();
-            matches.sort((a, b) => (a.slot || 0) - (b.slot || 0)).forEach(m => {
-                const teamA = getNameById(teams, m.teamA) || '—';
-                const teamB = getNameById(teams, m.teamB) || '—';
-                const played = m.played ? ' (finalizada)' : '';
-                const html = `<div style="margin-bottom:8px">
-      <strong>${m.code}</strong> ${m.round || ''} — ${teamA} vs ${teamB} ${played}
-      <div style="margin-top:6px">
-        <input size="3" class="scoreA" data-id="${m.id}" placeholder="A" value="${m.scoreA || ''}">
-        <input size="3" class="scoreB" data-id="${m.id}" placeholder="B" value="${m.scoreB || ''}">
-        <button class="btnSaveScore" data-id="${m.id}">Salvar</button>
-      </div>
-    </div>`;
-                $('#adminMatches').append(html);
-            });
+                // Partidas no admin - ORDENADAS E AGRUPADAS POR RODADA
+                $('#adminMatches').empty();
+                
+                // Agrupar partidas por rodada
+                const matchesByRound = {};
+                matches.forEach(m => {
+                    if (!matchesByRound[m.round]) {
+                        matchesByRound[m.round] = [];
+                    }
+                    matchesByRound[m.round].push(m);
+                });
+                
+                // Ordenar rodadas
+                const rounds = Object.keys(matchesByRound).sort();
+                
+                // Para cada rodada, ordenar partidas numericamente
+                rounds.forEach(round => {
+                    const roundMatches = matchesByRound[round]
+                        .sort((a, b) => {
+                            // Extrair número do código da partida (P1, P2, etc)
+                            const numA = parseInt(a.matchCode.replace('P', ''));
+                            const numB = parseInt(b.matchCode.replace('P', ''));
+                            return numA - numB;
+                        });
+                    
+                    let roundTitle = "";
+                    if (round === "1") roundTitle = "Rodada 1";
+                    else if (round === "2") roundTitle = "Rodada 2";
+                    else if (round === "3") roundTitle = "Finais";
+                    else roundTitle = `Rodada ${round}`;
+                    
+                    $('#adminMatches').append(`<div class="round-title">${roundTitle}</div>`);
+                    
+                    roundMatches.forEach(m => {
+                        const teamA = getNameById(teams, m.teamA);
+                        const teamB = getNameById(teams, m.teamB);
+                        const statusBadge = m.status === 'finalizado' ? 
+                            '<span class="badge ok">Finalizado</span>' : 
+                            '<span class="badge muted">Pendente</span>';
+                        
+                        const html = `
+                            <div style="margin-bottom:16px; padding:12px; border:1px solid var(--border); border-radius:8px;">
+                                <div class="flex">
+                                    <strong>${m.matchCode}</strong>
+                                    ${statusBadge}
+                                </div>
+                                <div style="margin:8px 0">
+                                    <strong>${teamA || '—'}</strong> vs <strong>${teamB || '—'}</strong>
+                                </div>
+                                <div class="match-controls">
+                                    <input class="score-input scoreA" data-id="${m.id}" 
+                                           placeholder="A" value="${m.scoreA || ''}" 
+                                           ${!teamA || !teamB ? 'disabled' : ''}>
+                                    <span>X</span>
+                                    <input class="score-input scoreB" data-id="${m.id}" 
+                                           placeholder="B" value="${m.scoreB || ''}"
+                                           ${!teamA || !teamB ? 'disabled' : ''}>
+                                    <button class="btnSaveScore primary" data-id="${m.id}"
+                                            ${!teamA || !teamB ? 'disabled' : ''}>Salvar</button>
+                                    ${m.status === 'finalizado' ? 
+                                        '<button class="btnResetScore danger small" data-id="'+m.id+'">Resetar</button>' : ''}
+                                </div>
+                                ${(!teamA || !teamB) ? '<small class="muted">Defina os times primeiro</small>' : ''}
+                            </div>
+                        `;
+                        $('#adminMatches').append(html);
+                    });
+                });
+
+            } catch (error) {
+                console.error('Erro ao renderizar admin:', error);
+            }
         }
 
-        // ---------- HELPERS ----------
+        // --- FUNÇÕES AUXILIARES ---
         function getNameById(teams, id) {
             if (!id) return null;
             const t = teams.find(x => x.id === id);
             return t ? t.name : null;
         }
 
-        // compute ranking array from raw teams+matches (do not store wins in teams collection)
         function computeRankingFromData(teams, matches) {
-            // prepare copy
             const map = {};
-            teams.forEach(t => { map[t.id] = { id: t.id, name: t.name, players: t.players || [], wins: 0, scored: 0, conceded: 0 }; });
+            teams.forEach(t => { 
+                map[t.id] = { 
+                    id: t.id, 
+                    name: t.name, 
+                    players: t.players || [], 
+                    wins: 0, 
+                    scored: 0, 
+                    conceded: 0 
+                }; 
+            });
 
+            // Calcular estatísticas dos jogos finalizados
             matches.forEach(m => {
-                if (!m.played) return;
+                if (m.status !== 'finalizado') return;
                 const a = map[m.teamA];
                 const b = map[m.teamB];
                 if (!a || !b) return;
+                
                 a.scored += Number(m.scoreA || 0);
                 a.conceded += Number(m.scoreB || 0);
                 b.scored += Number(m.scoreB || 0);
                 b.conceded += Number(m.scoreA || 0);
-                if (Number(m.scoreA) > Number(m.scoreB)) a.wins++;
-                else if (Number(m.scoreB) > Number(m.scoreA)) b.wins++;
+                
+                if (Number(m.scoreA) > Number(m.scoreB)) {
+                    a.wins++;
+                } else if (Number(m.scoreB) > Number(m.scoreA)) {
+                    b.wins++;
+                }
             });
 
-            // ranking logic: wins desc, head-to-head (if single match between two), then point diff
+            // Ordenar por vitórias, depois saldo de pontos
             const arr = Object.values(map);
             arr.sort((A, B) => {
                 if (B.wins !== A.wins) return B.wins - A.wins;
-                // head-to-head determination
-                const hh = headToHeadResult(A.id, B.id, matches);
-                if (hh !== null) return hh; // hh is positive if A better -> we want negative to put A before B? We'll return -hh so A before B if hh=1
-                // point diff
-                const diffA = (A.scored || 0) - (A.conceded || 0);
-                const diffB = (B.scored || 0) - (B.conceded || 0);
+                const diffA = A.scored - A.conceded;
+                const diffB = B.scored - B.conceded;
                 return diffB - diffA;
             });
+            
             return arr;
         }
 
-        // headToHeadResult returns: -1 if A should be after B, 1 if A should be before B, null if inconclusive
-        function headToHeadResult(idA, idB, matches) {
-            const played = matches.filter(m => {
-                return m.played && ((m.teamA === idA && m.teamB === idB) || (m.teamA === idB && m.teamB === idA));
-            });
-            if (played.length === 1) {
-                const m = played[0];
-                // determine who won
-                let aWon = false, bWon = false;
-                if (m.teamA === idA) {
-                    if (m.scoreA > m.scoreB) aWon = true;
-                    else if (m.scoreB > m.scoreA) bWon = true;
-                } else {
-                    if (m.scoreB > m.scoreA) aWon = true;
-                    else if (m.scoreA > m.scoreB) bWon = true;
-                }
-                if (aWon) return 1; // A better
-                if (bWon) return -1; // B better
-                return 0;
-            }
-            return null;
-        }
-
-        // ---------- GENERATE & PREPARAR PARTIDAS ----------
+        // --- GERENCIAMENTO DE PARTIDAS ---
         async function generateStructure() {
-            // precisa exatamente 8 times
             const teams = await getTeamsSnap();
-            if (teams.length !== 8) { alert('É necessário exatamente 8 times cadastrados (atualmente: ' + teams.length + ').'); return; }
-
-            // Apaga matches existentes e cria P1..P12 conforme flag
-            await deleteAllMatches();
-            const order = teams; // usa ordem de criação/registro (você pode alterar)
-            const push = async (code, round, slot, teamA, teamB) => {
-                const match = {
-                    id: uid(),
-                    code,
-                    round,
-                    slot,
-                    teamA: teamA ? teamA.id : null,
-                    teamB: teamB ? teamB.id : null,
-                    scoreA: null,
-                    scoreB: null,
-                    played: false
-                };
-                await addMatchToDB(match);
-            };
-
-            // R1: P1..P4 (A v B, C v D, E v F, G v H)
-            await push('P1', 'R1', 1, order[0], order[1]);
-            await push('P2', 'R1', 2, order[2], order[3]);
-            await push('P3', 'R1', 3, order[4], order[5]);
-            await push('P4', 'R1', 4, order[6], order[7]);
-
-            // R2 placeholders P5..P8 (winners/losers to be filled later)
-            await push('P5', 'R2', 5, null, null);
-            await push('P6', 'R2', 6, null, null);
-            await push('P7', 'R2', 7, null, null);
-            await push('P8', 'R2', 8, null, null);
-
-            // R3 placeholders P9..P12. P11 and P12 obrigatórias. P9/P10 dependem de flag.
-            if (INCLUI_PARTIDAS_OPCIONAIS) {
-                await push('P9', 'R3', 9, null, null);
-                await push('P10', 'R3', 10, null, null);
-            }
-            await push('P11', 'R3', 11, null, null);
-            await push('P12', 'R3', 12, null, null);
-
-            alert('Estrutura gerada (P1..). Agora registre resultados de P1..P4 para atualizar P5..P8 via "Atualizar P5..P8".');
-        }
-
-        // preenche P5..P8 a partir de resultados de P1..P4
-        async function prepareR2() {
-            const teams = await getTeamsSnap();
-            let matches = await getMatchesSnap();
-
-            const find = code => matches.find(m => m.code === code);
-
-            const m1 = find('P1'), m2 = find('P2'), m3 = find('P3'), m4 = find('P4');
-
-            const winner = (m) => {
-                if (!m) return null;
-                if (!m.played) return null;
-                return Number(m.scoreA) > Number(m.scoreB) ? m.teamA : m.teamB;
-            };
-            const loser = (m) => {
-                if (!m) return null;
-                if (!m.played) return null;
-                return Number(m.scoreA) > Number(m.scoreB) ? m.teamB : m.teamA;
-            };
-
-            const w1 = winner(m1), l1 = loser(m1);
-            const w2 = winner(m2), l2 = loser(m2);
-            const w3 = winner(m3), l3 = loser(m3);
-            const w4 = winner(m4), l4 = loser(m4);
-
-            matches = matches.map(m => {
-                if (m.code === 'P5') { m.teamA = w1 || m.teamA; m.teamB = w2 || m.teamB; m.played = false; m.scoreA = null; m.scoreB = null; }
-                if (m.code === 'P6') { m.teamA = w3 || m.teamA; m.teamB = w4 || m.teamB; m.played = false; m.scoreA = null; m.scoreB = null; }
-                if (m.code === 'P7') { m.teamA = l1 || m.teamA; m.teamB = l2 || m.teamB; m.played = false; m.scoreA = null; m.scoreB = null; }
-                if (m.code === 'P8') { m.teamA = l3 || m.teamA; m.teamB = l4 || m.teamB; m.played = false; m.scoreA = null; m.scoreB = null; }
-                return m;
-            });
-
-            // salvar
-            for (const m of matches) {
-                if (['P5', 'P6', 'P7', 'P8'].includes(m.code)) {
-                    await updateMatchInDB(m.id, { teamA: m.teamA || null, teamB: m.teamB || null, played: false, scoreA: null, scoreB: null });
-                }
-            }
-            alert('P5..P8 atualizadas (se P1..P4 tiverem resultados).');
-        }
-
-        // prepara R3 (P9..P12) com base no ranking atual
-        async function prepareR3() {
-            const teams = await getTeamsSnap();
-            let matches = await getMatchesSnap();
-
-            // compute ranking after current played matches
-            const ranked = computeRankingFromData(teams, matches); // best -> worst
-            if (ranked.length !== 8) { alert('Erro: são necessários 8 times cadastrados.'); return; }
-
-            // mapping: P9 = rank8 vs rank7 ; P10 = rank6 vs rank5 ; P11 = rank4 vs rank3 ; P12 = rank2 vs rank1
-            const ids = ranked.map(r => r.id);
-            const assignments = {};
-            if (INCLUI_PARTIDAS_OPCIONAIS) {
-                assignments['P9'] = { teamA: ids[7] || null, teamB: ids[6] || null };
-                assignments['P10'] = { teamA: ids[5] || null, teamB: ids[4] || null };
-            }
-            assignments['P11'] = { teamA: ids[3] || null, teamB: ids[2] || null };
-            assignments['P12'] = { teamA: ids[1] || null, teamB: ids[0] || null };
-
-            // update matches in DB
-            matches = matches.filter(m => ['P9', 'P10', 'P11', 'P12'].includes(m.code));
-            for (const m of matches) {
-                const a = (assignments[m.code] && assignments[m.code].teamA) || null;
-                const b = (assignments[m.code] && assignments[m.code].teamB) || null;
-                await updateMatchInDB(m.id, { teamA: a, teamB: b, played: false, scoreA: null, scoreB: null });
-            }
-            alert('P9..P12 montadas conforme ranking atual.');
-        }
-
-        // ---------- SALVAR PLACAR ----------
-        async function saveScore(matchId, sA, sB) {
-            if (sA === '' || sB === '') { alert('Preencha ambos os scores'); return; }
-            const a = Number(sA), b = Number(sB);
-            if (isNaN(a) || isNaN(b)) { alert('Scores inválidos'); return; }
-            await updateMatchInDB(matchId, { scoreA: a, scoreB: b, played: true });
-            alert('Placar salvo.');
-        }
-
-        // ---------- CRUD TIMES ----------
-        async function deleteTeam(id) {
-            if (!db) {
-                const arr = JSON.parse(localStorage.getItem('teams') || '[]');
-                const filtered = arr.filter(t => t.id !== id);
-                localStorage.setItem('teams', JSON.stringify(filtered));
+            if (teams.length !== 8) {
+                alert(`É necessário exatamente 8 times cadastrados (atualmente: ${teams.length}).`);
                 return;
             }
+
+            await deleteAllMatches();
+            
+            // Rodada 1 - Partidas iniciais
+            await addMatchToDB({
+                id: uid(),
+                matchCode: 'P1',
+                round: 1,
+                teamA: teams[0].id,
+                teamB: teams[1].id,
+                scoreA: null,
+                scoreB: null,
+                status: 'pendente',
+                winner: null
+            });
+
+            await addMatchToDB({
+                id: uid(),
+                matchCode: 'P2', 
+                round: 1,
+                teamA: teams[2].id,
+                teamB: teams[3].id,
+                scoreA: null,
+                scoreB: null,
+                status: 'pendente',
+                winner: null
+            });
+
+            await addMatchToDB({
+                id: uid(),
+                matchCode: 'P3',
+                round: 1,
+                teamA: teams[4].id,
+                teamB: teams[5].id,
+                scoreA: null,
+                scoreB: null,
+                status: 'pendente',
+                winner: null
+            });
+
+            await addMatchToDB({
+                id: uid(),
+                matchCode: 'P4',
+                round: 1,
+                teamA: teams[6].id,
+                teamB: teams[7].id,
+                scoreA: null,
+                scoreB: null,
+                status: 'pendente',
+                winner: null
+            });
+
+            // Rodada 2 - Placeholders
+            for (let i = 5; i <= 8; i++) {
+                await addMatchToDB({
+                    id: uid(),
+                    matchCode: `P${i}`,
+                    round: 2,
+                    teamA: null,
+                    teamB: null,
+                    scoreA: null,
+                    scoreB: null,
+                    status: 'pendente',
+                    winner: null
+                });
+            }
+
+            // Rodada 3
+            if (INCLUI_PARTIDAS_OPCIONAIS) {
+                for (let i = 9; i <= 10; i++) {
+                    await addMatchToDB({
+                        id: uid(),
+                        matchCode: `P${i}`,
+                        round: 3,
+                        teamA: null,
+                        teamB: null,
+                        scoreA: null,
+                        scoreB: null,
+                        status: 'pendente',
+                        winner: null
+                    });
+                }
+            }
+
+            // Partidas finais
+            for (let i = 11; i <= 12; i++) {
+                await addMatchToDB({
+                    id: uid(),
+                    matchCode: `P${i}`,
+                    round: 3,
+                    teamA: null,
+                    teamB: null,
+                    scoreA: null,
+                    scoreB: null,
+                    status: 'pendente',
+                    winner: null
+                });
+            }
+
+            alert('Estrutura de partidas gerada com sucesso!');
+        }
+
+        async function prepareR2() {
+            const teams = await getTeamsSnap();
+            const matches = await getMatchesSnap();
+
+            // Encontrar vencedores e perdedores da rodada 1
+            const results = {};
+            for (let i = 1; i <= 4; i++) {
+                const match = matches.find(m => m.matchCode === `P${i}`);
+                if (match && match.status === 'finalizado') {
+                    results[`P${i}`] = {
+                        winner: match.winner,
+                        loser: match.winner === match.teamA ? match.teamB : match.teamA
+                    };
+                }
+            }
+
+            // Atualizar rodada 2 baseado nos resultados
+            const updates = [];
+            
+            // P5: Vencedor P1 vs Vencedor P2
+            if (results.P1 && results.P2) {
+                updates.push({
+                    matchCode: 'P5',
+                    teamA: results.P1.winner,
+                    teamB: results.P2.winner
+                });
+            }
+
+            // P6: Vencedor P3 vs Vencedor P4  
+            if (results.P3 && results.P4) {
+                updates.push({
+                    matchCode: 'P6',
+                    teamA: results.P3.winner,
+                    teamB: results.P4.winner
+                });
+            }
+
+            // P7: Perdedor P1 vs Perdedor P2
+            if (results.P1 && results.P2) {
+                updates.push({
+                    matchCode: 'P7', 
+                    teamA: results.P1.loser,
+                    teamB: results.P2.loser
+                });
+            }
+
+            // P8: Perdedor P3 vs Perdedor P4
+            if (results.P3 && results.P4) {
+                updates.push({
+                    matchCode: 'P8',
+                    teamA: results.P3.loser, 
+                    teamB: results.P4.loser
+                });
+            }
+
+            // Aplicar atualizações
+            for (const update of updates) {
+                const match = matches.find(m => m.matchCode === update.matchCode);
+                if (match) {
+                    await updateMatchInDB(match.id, {
+                        teamA: update.teamA,
+                        teamB: update.teamB,
+                        status: 'pendente',
+                        scoreA: null,
+                        scoreB: null,
+                        winner: null
+                    });
+                }
+            }
+
+            alert('Rodada 2 atualizada com base nos resultados da Rodada 1');
+        }
+
+        async function prepareR3() {
+            const teams = await getTeamsSnap();
+            const matches = await getMatchesSnap();
+            const ranked = computeRankingFromData(teams, matches);
+
+            if (ranked.length < 8) {
+                alert('É necessário ter 8 times para montar a rodada 3');
+                return;
+            }
+
+            // Mapear posições do ranking para as partidas
+            const assignments = {
+                'P11': { teamA: ranked[2].id, teamB: ranked[3].id }, // 3º vs 4º
+                'P12': { teamA: ranked[0].id, teamB: ranked[1].id }  // 1º vs 2º
+            };
+
+            if (INCLUI_PARTIDAS_OPCIONAIS) {
+                assignments['P9'] = { teamA: ranked[6].id, teamB: ranked[7].id }; // 7º vs 8º
+                assignments['P10'] = { teamA: ranked[4].id, teamB: ranked[5].id }; // 5º vs 6º
+            }
+
+            // Aplicar atribuições
+            for (const [matchCode, teams] of Object.entries(assignments)) {
+                const match = matches.find(m => m.matchCode === matchCode);
+                if (match) {
+                    await updateMatchInDB(match.id, {
+                        teamA: teams.teamA,
+                        teamB: teams.teamB,
+                        status: 'pendente',
+                        scoreA: null,
+                        scoreB: null,
+                        winner: null
+                    });
+                }
+            }
+
+            alert('Rodada 3 montada conforme ranking atual');
+        }
+
+        // --- GERENCIAMENTO DE PLACARES ---
+        async function saveScore(matchId, scoreA, scoreB) {
+            if (scoreA === '' || scoreB === '') {
+                alert('Preencha ambos os placares');
+                return;
+            }
+
+            const a = Number(scoreA);
+            const b = Number(scoreB);
+            
+            if (isNaN(a) || isNaN(b)) {
+                alert('Placares devem ser números válidos');
+                return;
+            }
+
+            const match = (await getMatchesSnap()).find(m => m.id === matchId);
+            if (!match) {
+                alert('Partida não encontrada');
+                return;
+            }
+
+            const winner = a > b ? match.teamA : b > a ? match.teamB : null;
+
+            await updateMatchInDB(matchId, {
+                scoreA: a,
+                scoreB: b,
+                status: 'finalizado',
+                winner: winner
+            });
+
+            alert('Placar salvo com sucesso!');
+        }
+
+        async function resetScore(matchId) {
+            await updateMatchInDB(matchId, {
+                scoreA: null,
+                scoreB: null,
+                status: 'pendente',
+                winner: null
+            });
+            alert('Placar resetado!');
+        }
+
+        // --- CRUD DE TIMES ---
+        async function deleteTeam(id) {
+            if (!confirm('Tem certeza que deseja excluir este time?')) return;
             await db.collection('teams').doc(id).delete();
         }
 
-        // ---------- delete everything ----------
         async function deleteAllData() {
-            if (!confirm('Confirma apagar todas as teams e matches do Firestore/local?')) return;
+            if (!confirm('ATENÇÃO: Isso apagará TODOS os times e partidas. Continuar?')) return;
             await deleteAllMatches();
             await deleteAllTeams();
-            alert('Apagado.');
+            alert('Todos os dados foram apagados.');
         }
 
-        // ---------- listeners/setup UI ----------
-        $(function () {
-            // flag label
-            $('#flagLabel').text(INCLUI_PARTIDAS_OPCIONAIS ? 'true (P9/P10 incluídas)' : 'false (P9/P10 NÃO incluídas)');
+        // --- QR CODE ---
+        function genQRCode() {
+            const url = window.location.href;
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
+            $('#qrcode').html(`
+                <img src="${qrUrl}" alt="QR Code para o torneio">
+                <div class="small" style="margin-top:8px;">
+                    <a href="${url}" target="_blank">${url}</a>
+                </div>
+            `);
+        }
 
-            // setup realtime
-            setupRealtime();
+        // --- SISTEMA DE ABAS ---
+        function setupTabs() {
+            $('.tab').on('click', function() {
+                const tabId = $(this).data('tab');
+                
+                // Remover classe active de todas as abas e conteúdos
+                $('.tab').removeClass('active');
+                $('.tab-content').removeClass('active');
+                
+                // Adicionar classe active à aba clicada e ao conteúdo correspondente
+                $(this).addClass('active');
+                $(`#${tabId}-tab`).addClass('active');
+            });
+        }
 
-            // initial render
-            renderPublic();
-            if (localStorage.getItem('isAdmin')) {
+        function updateAdminSections() {
+            const adminLoggedIn = isAdmin();
+            
+            if (adminLoggedIn) {
+                $('#admin-section').show();
+                $('#login-section').hide();
+                $('#teams-admin-section').show();
+                $('#teams-login-section').hide();
+                $('#matches-admin-section').show();
+                $('#matches-login-section').hide();
                 $('.admin-only').show();
-                $('#btnLogout').show();
-                $('#btnLogin').hide();
+            } else {
+                $('#admin-section').hide();
+                $('#login-section').show();
+                $('#teams-admin-section').hide();
+                $('#teams-login-section').show();
+                $('#matches-admin-section').hide();
+                $('#matches-login-section').show();
+                $('.admin-only').hide();
+                
+                // Garantir que as abas admin não estejam ativas
+                if ($('.tab.admin-only').hasClass('active')) {
+                    $('.tab[data-tab="public"]').click();
+                }
+            }
+        }
+
+        function updateToggle() {
+            $('#toggleOptional').prop('checked', INCLUI_PARTIDAS_OPCIONAIS);
+            $('#flagLabel').text(INCLUI_PARTIDAS_OPCIONAIS ? 'SIM' : 'NÃO');
+        }
+
+        // --- INICIALIZAÇÃO ---
+        $(function () {
+            // Configuração inicial
+            updateToggle();
+            
+            // Setup
+            setupTabs();
+            setupRealtime();
+            genQRCode();
+
+            // Verificar login e atualizar interface
+            updateAdminSections();
+            renderPublic();
+            if (isAdmin()) {
                 renderAdmin();
             }
 
-            // gen QR
-            genQRCode();
-
-            // login
+            // Event Listeners
             $('#btnLogin').on('click', function () {
-                const u = $('#loginUser').val();
-                const p = $('#loginPass').val();
-                if (u === ADMIN_USER && p === ADMIN_PASS) {
-                    localStorage.setItem('isAdmin', '1');
-                    $('.admin-only').show();
-                    $('#btnLogout').show();
-                    $('#btnLogin').hide();
+                const user = $('#loginUser').val();
+                const pass = $('#loginPass').val();
+                
+                if (user === ADMIN_USER && pass === ADMIN_PASS) {
+                    localStorage.setItem('isAdmin', 'true');
+                    updateAdminSections();
                     renderAdmin();
+                    alert('Login realizado com sucesso!');
                 } else {
-                    alert('Credenciais inválidas.');
+                    alert('Credenciais inválidas!');
                 }
             });
+
             $('#btnLogout').on('click', function () {
                 localStorage.removeItem('isAdmin');
-                $('.admin-only').hide();
-                $('#btnLogout').hide();
-                $('#btnLogin').show();
+                updateAdminSections();
+                alert('Logout realizado!');
             });
 
-            // add team
+            $('#toggleOptional').on('change', function() {
+                INCLUI_PARTIDAS_OPCIONAIS = $(this).is(':checked');
+                updateToggle();
+            });
+
             $('#btnAddTeam').on('click', async function () {
                 const name = $('#teamName').val().trim();
-                if (!name) { alert('Nome do time é obrigatório'); return; }
-                const players = $('#teamPlayers').val().split(',').map(x => x.trim()).filter(Boolean);
-                const t = { id: uid(), name, players };
-                await addTeamToDB(t);
-                $('#teamName').val(''); $('#teamPlayers').val('');
-                renderPublic(); renderAdmin();
+                if (!name) {
+                    alert('Nome do time é obrigatório');
+                    return;
+                }
+
+                const players = $('#teamPlayers').val()
+                    .split(',')
+                    .map(p => p.trim())
+                    .filter(p => p !== '');
+
+                const team = {
+                    id: uid(),
+                    name: name,
+                    players: players,
+                    wins: 0,
+                    scored: 0,
+                    conceded: 0,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                try {
+                    await addTeamToDB(team);
+                    $('#teamName').val('');
+                    $('#teamPlayers').val('');
+                    alert('Time adicionado com sucesso!');
+                } catch (error) {
+                    alert('Erro ao adicionar time: ' + error.message);
+                }
             });
 
-            // clear teams
             $('#btnClearTeams').on('click', async function () {
-                if (!confirm('Apagar todos os times?')) return;
-                await deleteAllTeams();
-                renderPublic(); renderAdmin();
+                if (!confirm('Tem certeza que deseja apagar TODOS os times?')) return;
+                try {
+                    await deleteAllTeams();
+                    alert('Todos os times foram removidos!');
+                } catch (error) {
+                    alert('Erro ao limpar times: ' + error.message);
+                }
             });
 
-            // del team (delegation)
             $(document).on('click', '.delTeam', async function () {
-                const id = $(this).data('id');
-                if (!confirm('Excluir time?')) return;
-                await deleteTeam(id);
-                renderPublic(); renderAdmin();
+                const teamId = $(this).data('id');
+                await deleteTeam(teamId);
             });
 
-            // generate structure
-            $('#btnGenerate').on('click', async function () {
-                if (!confirm('Gerar estrutura P1.. (isto apagará partidas atuais). Continuar?')) return;
-                await generateStructure();
-                renderPublic(); renderAdmin();
+            $('#btnGenerate, #btnGenerate2').on('click', generateStructure);
+            $('#btnPrepareR2, #btnPrepareR2-2').on('click', prepareR2);
+            $('#btnPrepareR3, #btnPrepareR3-2').on('click', prepareR3);
+            $('#btnDeleteAll').on('click', deleteAllData);
+            $('#btnRefresh').on('click', function () {
+                renderPublic();
+                if (isAdmin()) {
+                    renderAdmin();
+                }
             });
 
-            $('#btnPrepareR2').on('click', async function () {
-                await prepareR2();
-                renderPublic(); renderAdmin();
-            });
-
-            $('#btnPrepareR3').on('click', async function () {
-                await prepareR3();
-                renderPublic(); renderAdmin();
-            });
-
-            $('#btnDeleteAll').on('click', async function () { await deleteAllData(); renderPublic(); renderAdmin(); });
-
-            $('#btnRefresh').on('click', function () { renderPublic(); renderAdmin(); });
-
-            // save score (delegation)
             $(document).on('click', '.btnSaveScore', async function () {
-                const id = $(this).data('id');
-                const sA = $(`.scoreA[data-id="${id}"]`).val();
-                const sB = $(`.scoreB[data-id="${id}"]`).val();
-                await saveScore(id, sA, sB);
-                renderPublic(); renderAdmin();
+                const matchId = $(this).data('id');
+                const scoreA = $(`.scoreA[data-id="${matchId}"]`).val();
+                const scoreB = $(`.scoreB[data-id="${matchId}"]`).val();
+                await saveScore(matchId, scoreA, scoreB);
             });
 
-            // realtime fallback: if no DB, poll localStorage changes occasionally
-            if (!db) {
-                setInterval(() => { renderPublic(); renderAdmin(); }, 1500);
-            }
+            $(document).on('click', '.btnResetScore', async function () {
+                const matchId = $(this).data('id');
+                await resetScore(matchId);
+            });
         });
-
-        // QR code generator
-        function genQRCode() {
-            const url = window.location.href;
-            const qr = `https://chart.googleapis.com/chart?cht=qr&chs=300x300&chl=${encodeURIComponent(url)}`;
-            $('#qrcode').html(`<img src="${qr}" alt="QR"><div class="small">Link: <a href="${url}" target="_blank">${url}</a></div>`);
-        }
     </script>
 </body>
-
 </html>
