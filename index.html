@@ -436,7 +436,7 @@
             <div class="col">
                 <div class="flex">
                     <strong>🏐 Formato:</strong>
-                    <span>Quartetos (4 jogadores por time)</span>
+                    <span>Quartetos (4-5 jogadores por time)</span>
                 </div>
                 <div class="flex">
                     <strong>⚔️ Confrontos:</strong>
@@ -544,9 +544,9 @@
 
                 <h3>🛠️ Ferramentas</h3>
                 <div class="admin-actions">
-                    <button id="btnGenerate" class="primary">Gerar Partidas</button>
-                    <button id="btnPrepareR2">Atualizar R2</button>
-                    <button id="btnPrepareR3">Montar R3</button>
+                    <button id="btnGenerate" class="primary">Montar Rodada 1</button>
+                    <button id="btnPrepareR2">Montar Rodada 2</button>
+                    <button id="btnPrepareR3">Montar Rodada 3</button>
                     <button id="btnRefresh">Atualizar Dados</button>
                     <button id="btnDeleteAll" class="danger">Apagar Tudo</button>
                 </div>
@@ -597,9 +597,9 @@
                 <h2>⚽ Gerenciar Partidas</h2>
 
                 <div class="admin-actions">
-                    <button id="btnGenerate2" class="primary">Gerar Partidas</button>
-                    <button id="btnPrepareR2-2">Atualizar R2</button>
-                    <button id="btnPrepareR3-2">Montar R3</button>
+                    <button id="btnGenerate2" class="primary">Montar Rodada 1</button>
+                    <button id="btnPrepareR2-2">Montar Rodada 2</button>
+                    <button id="btnPrepareR3-2">Montar Rodada 3</button>
                 </div>
 
                 <h3>🎯 Controle de Partidas</h3>
@@ -1433,8 +1433,58 @@
                 await deleteTeam(teamId);
             });
 
-            $('#btnGenerate, #btnGenerate2').on('click', async function () {
+            // --- FUNÇÕES COM CONFIRMAÇÃO ---
+            async function generateStructureWithConfirmation() {
+                const matches = await getMatchesSnap();
+
+                if (matches.length > 0) {
+                    const confirmar = confirm(
+                        "ATENÇÃO: Gerar a Rodada 1 irá APAGAR TODAS as partidas existentes!\n\n" +
+                        "Isso inclui partidas da Rodada 2, Rodada 3 e quaisquer placares já preenchidos.\n\n" +
+                        "Deseja continuar?"
+                    );
+                    if (!confirmar) return;
+                }
+
                 await generateStructure();
+            }
+
+            async function prepareR2WithConfirmation() {
+                const matches = await getMatchesSnap();
+                const r2Matches = matches.filter(m => m.round === "2");
+                const r2WithData = r2Matches.filter(m => m.teamA || m.teamB || m.scoreA !== null || m.scoreB !== null);
+
+                if (r2WithData.length > 0) {
+                    const confirmar = confirm(
+                        "ATENÇÃO: Montar a Rodada 2 irá SOBRESCREVER os times e resetar os placares das partidas da Rodada 2!\n\n" +
+                        "Isso afetará " + r2WithData.length + " partida(s) que já possuem dados.\n\n" +
+                        "Deseja continuar?"
+                    );
+                    if (!confirmar) return;
+                }
+
+                await prepareR2();
+            }
+
+            async function prepareR3WithConfirmation() {
+                const matches = await getMatchesSnap();
+                const r3Matches = matches.filter(m => m.round === "3");
+                const r3WithData = r3Matches.filter(m => m.teamA || m.teamB || m.scoreA !== null || m.scoreB !== null);
+
+                if (r3WithData.length > 0) {
+                    const confirmar = confirm(
+                        "ATENÇÃO: Montar a Rodada 3 irá SOBRESCREVER os times e resetar os placares das partidas da Rodada 3!\n\n" +
+                        "Isso afetará " + r3WithData.length + " partida(s) que já possuem dados.\n\n" +
+                        "Deseja continuar?"
+                    );
+                    if (!confirmar) return;
+                }
+
+                await prepareR3();
+            }
+
+            $('#btnGenerate, #btnGenerate2').on('click', async function () {
+                await generateStructureWithConfirmation();
                 renderPublic();
                 if (isAdmin()) {
                     renderAdminMatches();
@@ -1442,7 +1492,7 @@
             });
 
             $('#btnPrepareR2, #btnPrepareR2-2').on('click', async function () {
-                await prepareR2();
+                await prepareR2WithConfirmation();
                 renderPublic();
                 if (isAdmin()) {
                     renderAdminMatches();
@@ -1450,7 +1500,7 @@
             });
 
             $('#btnPrepareR3, #btnPrepareR3-2').on('click', async function () {
-                await prepareR3();
+                await prepareR3WithConfirmation();
                 renderPublic();
                 if (isAdmin()) {
                     renderAdminMatches();
